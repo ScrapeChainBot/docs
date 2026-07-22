@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ScrapeChain Documentation</title>
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { font-size: 16px; scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, sans-serif;
+      background: #0f1117;
+      color: #c9d1d9;
+      display: flex;
+      min-height: 100vh;
+      line-height: 1.7;
+    }
+
+    /* ── Sidebar ── */
+    #sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: 272px;
+      height: 100vh;
+      background: #161b22;
+      border-right: 1px solid #21262d;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+      transition: transform 0.25s ease;
+    }
+    #sidebar::-webkit-scrollbar { width: 4px; }
+    #sidebar::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+
+    .sidebar-logo {
+      padding: 24px 20px 16px;
+      border-bottom: 1px solid #21262d;
+    }
+    .sidebar-logo h1 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #f0f6fc;
+      letter-spacing: -0.3px;
+    }
+    .sidebar-logo span {
+      font-size: 0.72rem;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 500;
+    }
+
+    .sidebar-nav { padding: 12px 0 24px; flex: 1; }
+
+    .nav-section-label {
+      padding: 10px 20px 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 6px 20px 6px 20px;
+      font-size: 0.875rem;
+      color: #8b949e;
+      text-decoration: none;
+      cursor: pointer;
+      border-left: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .nav-item:hover { color: #e6edf3; background: #1c2128; }
+    .nav-item.active {
+      color: #58a6ff;
+      border-left-color: #58a6ff;
+      background: #1c2128;
+      font-weight: 500;
+    }
+    .nav-item.sub {
+      padding-left: 34px;
+      font-size: 0.83rem;
+    }
+    .nav-item.subsub {
+      padding-left: 50px;
+      font-size: 0.8rem;
+    }
+
+    /* ── Main content ── */
+    #main {
+      margin-left: 272px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Top bar ── */
+    #topbar {
+      position: sticky;
+      top: 0;
+      background: rgba(15,17,23,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid #21262d;
+      padding: 0 40px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 50;
+    }
+    #breadcrumb {
+      font-size: 0.82rem;
+      color: #8b949e;
+    }
+    #breadcrumb span { color: #58a6ff; }
+
+    #mobile-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: #c9d1d9;
+      cursor: pointer;
+      font-size: 1.3rem;
+      padding: 4px 8px;
+    }
+
+    /* ── Content area ── */
+    #content {
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 48px 40px 80px;
+    }
+
+    /* ── Page sections ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Typography ── */
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #f0f6fc;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+      line-height: 1.25;
+    }
+    .page-subtitle {
+      font-size: 1.05rem;
+      color: #8b949e;
+      margin-bottom: 36px;
+      border-bottom: 1px solid #21262d;
+      padding-bottom: 24px;
+    }
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: #f0f6fc;
+      margin: 40px 0 12px;
+      padding-top: 8px;
+    }
+    h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #e6edf3;
+      margin: 28px 0 10px;
+    }
+    h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #c9d1d9;
+      margin: 20px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #8b949e;
+    }
+    p { margin-bottom: 14px; color: #c9d1d9; }
+    ul, ol { margin: 10px 0 14px 24px; }
+    li { margin-bottom: 6px; color: #c9d1d9; }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    strong { color: #e6edf3; font-weight: 600; }
+
+    /* ── Callout / note ── */
+    .callout {
+      background: #1c2128;
+      border-left: 3px solid #58a6ff;
+      border-radius: 0 6px 6px 0;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 0.88rem;
+    }
+    .callout.warning { border-left-color: #d29922; background: #1c1a12; }
+    .callout.danger  { border-left-color: #f85149; background: #1c1214; }
+    .callout.success { border-left-color: #3fb950; background: #121c14; }
+    .callout strong { display: block; margin-bottom: 4px; }
+
+    /* ── Code / inline code ── */
+    code {
+      background: #1c2128;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.82em;
+      color: #79c0ff;
+    }
+    pre {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 18px 20px;
+      overflow-x: auto;
+      margin: 14px 0;
+      font-family: "SFMono-Regular", Consolas, monospace;
+      font-size: 0.85rem;
+      color: #e6edf3;
+      line-height: 1.6;
+    }
+
+    /* ── Table ── */
+    .table-wrap { overflow-x: auto; margin: 14px 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+    }
+    th {
+      background: #1c2128;
+      color: #8b949e;
+      font-weight: 600;
+      text-align: left;
+      padding: 10px 14px;
+      border: 1px solid #30363d;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 10px 14px;
+      border: 1px solid #21262d;
+      color: #c9d1d9;
+      vertical-align: top;
+    }
+    tr:nth-child(even) td { background: #0d1117; }
+
+    /* ── Badge ── */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+    .badge-on  { background: #1a3323; color: #3fb950; border: 1px solid #238636; }
+    .badge-off { background: #2a1a1a; color: #f85149; border: 1px solid #6e1c1c; }
+    .badge-default { background: #1c2128; color: #8b949e; border: 1px solid #30363d; }
+
+    /* ── Step list ── */
+    .step-list { list-style: none; margin: 0 0 20px; padding: 0; counter-reset: steps; }
+    .step-list li {
+      counter-increment: steps;
+      position: relative;
+      padding: 12px 16px 12px 52px;
+      margin-bottom: 8px;
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 8px;
+    }
+    .step-list li::before {
+      content: counter(steps);
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      background: #1f4788;
+      color: #58a6ff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    /* ── Setting block ── */
+    .setting-block {
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    .setting-header {
+      background: #161b22;
+      padding: 14px 18px;
+      border-bottom: 1px solid #21262d;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .setting-header h3 { margin: 0; font-size: 1rem; }
+    .setting-body { padding: 18px; }
+
+    /* ── Divider ── */
+    hr { border: none; border-top: 1px solid #21262d; margin: 32px 0; }
+
+    /* ── Prev / Next navigation ── */
+    #page-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: stretch;
+      gap: 16px;
+      margin-top: 64px;
+      padding-top: 32px;
+      border-top: 1px solid #21262d;
+    }
+    .nav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px;
+      background: #161b22;
+      border: 1px solid #21262d;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-decoration: none;
+      color: inherit;
+      max-width: 48%;
+    }
+    .nav-btn:hover { border-color: #58a6ff; background: #1c2128; text-decoration: none; }
+    .nav-btn.right { text-align: right; margin-left: auto; }
+    .nav-btn-label {
+      font-size: 0.72rem;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .nav-btn-label::before { content: "← "; }
+    .nav-btn.right .nav-btn-label::before { content: ""; }
+    .nav-btn.right .nav-btn-label::after { content: " →"; }
+    .nav-btn-title { font-size: 0.95rem; font-weight: 600; color: #58a6ff; }
+    .nav-btn-spacer { flex: 1; max-width: 48%; }
+
+    /* ── Mobile ── */
+    #sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 90;
+    }
+
+    @media (max-width: 768px) {
+      #sidebar { transform: translateX(-100%); }
+      #sidebar.open { transform: translateX(0); }
+      #sidebar-overlay.open { display: block; }
+      #main { margin-left: 0; }
+      #mobile-toggle { display: block; }
+      #content { padding: 32px 20px 60px; }
+      #topbar { padding: 0 20px; }
+      h1 { font-size: 1.6rem; }
+      .nav-btn { padding: 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar overlay for mobile -->
+<div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+<!-- ══════════════ SIDEBAR ══════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <h1>ScrapeChain</h1>
+    <span>Documentation</span>
+  </div>
+  <div class="sidebar-nav">
+
+    <div class="nav-section-label">Getting Started</div>
+    <a class="nav-item active" data-page="introduction">Introduction</a>
+    <a class="nav-item" data-page="setup">Setup Guide</a>
+    <a class="nav-item sub" data-page="setup-keys">Keys You'll Need</a>
+    <a class="nav-item sub" data-page="setup-server">Server Setup</a>
+    <a class="nav-item sub" data-page="setup-activation">Bot Activation</a>
+
+    <div class="nav-section-label">Global Settings</div>
+    <a class="nav-item" data-page="duplicate-detection">Duplicate Detection</a>
+    <a class="nav-item" data-page="chain-selection">Chain Selection</a>
+    <a class="nav-item" data-page="rug-shield">Rug Shield</a>
+    <a class="nav-item sub" data-page="honeypot-shield">Honeypot Shield</a>
+    <a class="nav-item sub" data-page="dev-sell-shield">Dev Sell Shield</a>
+    <a class="nav-item" data-page="smart-fees">Smart Fees</a>
+    <a class="nav-item sub" data-page="smart-fees-toggle">Smart Fees Toggle</a>
+    <a class="nav-item sub" data-page="exit-fee-escalation">Exit Fee Escalation</a>
+    <a class="nav-item sub" data-page="evm-gas-ceiling">EVM Gas Ceiling</a>
+    <a class="nav-item sub" data-page="fee-reserve">Fee Reserve</a>
+
+    <div class="nav-section-label">Source Monitor</div>
+    <a class="nav-item" data-page="add-channel">Adding a Channel</a>
+    <a class="nav-item" data-page="sol-channel">SOL Channel Settings</a>
+    <a class="nav-item sub" data-page="buy-amount">Buy Amount</a>
+    <a class="nav-item sub" data-page="slippage">Slippage</a>
+    <a class="nav-item sub" data-page="priority-fee">Priority Fee</a>
+    <a class="nav-item sub" data-page="anti-mev">Anti-MEV</a>
+    <a class="nav-item sub" data-page="stop-loss">Stop Loss</a>
+    <a class="nav-item sub" data-page="take-profit">Take Profit</a>
+    <a class="nav-item sub" data-page="safety-filters">Safety Filters</a>
+    <a class="nav-item" data-page="robinhood-channel">Robinhood Channel Settings</a>
+    <a class="nav-item" data-page="disable-channel">Disable Channel</a>
+    <a class="nav-item" data-page="filter-mode">Filter Mode</a>
+    <a class="nav-item" data-page="dynamic-filters">Dynamic Filters</a>
+    <a class="nav-item sub" data-page="add-filter">Add Filter</a>
+    <a class="nav-item sub" data-page="multi-filter">Multi-Filter (AND Logic)</a>
+    <a class="nav-item" data-page="remove-channel">Remove Channel</a>
+
+    <div class="nav-section-label">Positions</div>
+    <a class="nav-item" data-page="positions">Positions Overview</a>
+    <a class="nav-item sub" data-page="sol-positions">Solana Positions</a>
+    <a class="nav-item sub" data-page="robinhood-positions">Robinhood Positions</a>
+
+  </div>
+</nav>
+
+<!-- ══════════════ MAIN ══════════════ -->
+<div id="main">
+  <div id="topbar">
+    <button id="mobile-toggle" onclick="toggleSidebar()">☰</button>
+    <div id="breadcrumb">ScrapeChain / <span id="bc-current">Introduction</span></div>
+  </div>
+
+  <div id="content">
+
+    <!-- ═══════════════════════════════════════
+         GETTING STARTED
+    ═══════════════════════════════════════ -->
+
+    <!-- PAGE: introduction -->
+    <div class="page active" id="page-introduction">
+      <h1>ScrapeChain Bot</h1>
+      <p class="page-subtitle">Automated copy-trading bot for Solana and Robinhood (EVM) — monitors Telegram channels for contract addresses and executes trades instantly.</p>
+
+      <h2>What is ScrapeChain?</h2>
+      <p>ScrapeChain is a Telegram-based trading bot that watches channels and groups you trust. When it detects a contract address in a message, it automatically executes a buy on the blockchain — then manages your exit through configurable Stop Loss, Take Profit, and Rug Shield systems.</p>
+
+      <h2>Supported Chains</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Chain</th><th>Type</th><th>Execution</th></tr></thead>
+          <tbody>
+            <tr><td><strong>◎ Solana (SOL)</strong></td><td>L1</td><td>Via GMGN with Jito bundle support</td></tr>
+            <tr><td><strong>🟢 Robinhood</strong></td><td>EVM L2</td><td>Via your QuickNode RPC endpoint</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>How it works</h2>
+      <ol>
+        <li>You add Telegram channels/groups to the bot's Source Monitor.</li>
+        <li>When a message containing a valid contract address appears, the bot validates it against your safety filters.</li>
+        <li>If it passes, the bot buys automatically using your configured amount, slippage, and fee settings.</li>
+        <li>The bot then monitors the position and sells when your Stop Loss, Take Profit, or Rug Shield conditions are met.</li>
+      </ol>
+
+      <div class="callout success">
+        <strong>Bot link</strong>
+        Access the bot at <a href="https://t.me/ScrapeChainBot" target="_blank">https://t.me/ScrapeChainBot</a>
+      </div>
+
+      <h2>Documentation structure</h2>
+      <p>This documentation is organized progressively — start with the Setup Guide to get running, then move through Global Settings and channel configuration as you become more familiar with the bot.</p>
+
+      <ul>
+        <li><strong>Getting Started</strong> — Install and activate the bot</li>
+        <li><strong>Global Settings</strong> — Bot-wide controls for duplicate detection, chain selection, rug protection, and fees</li>
+        <li><strong>Source Monitor</strong> — Per-channel trading parameters, filters, and controls</li>
+        <li><strong>Positions</strong> — View and manually manage open positions</li>
+      </ul>
+    </div>
+
+
+    <!-- PAGE: setup -->
+    <div class="page" id="page-setup">
+      <h1>Setup Guide</h1>
+      <p class="page-subtitle">Before running the bot you need a license, several API keys, and a server. This page walks through the full process from start to finish.</p>
+
+      <h2>Step 1 — Get a License</h2>
+      <ol class="step-list">
+        <li>Sign up at <a href="https://github.com" target="_blank">GitHub.com</a>. Copy your username from the URL — it appears as <code>https://github.com/username</code>.</li>
+        <li>Sign up at GMGN using this referral link: <a href="https://gmgn.ai/r/TGScraper" target="_blank">https://gmgn.ai/r/TGScraper</a> — you must use this specific link.</li>
+        <li>Open <a href="https://t.me/scrapechainbot" target="_blank">@scrapechainbot</a> and use the <code>/admin</code> command to send your GitHub username to admin. You'll receive a license key in reply.</li>
+      </ol>
+    </div>
+
+
+    <!-- PAGE: setup-keys -->
+    <div class="page" id="page-setup-keys">
+      <h1>Keys You'll Need</h1>
+      <p class="page-subtitle">Gather all required API keys and credentials before starting the server setup.</p>
+
+      <h2>Telegram Bot Token</h2>
+      <ol class="step-list">
+        <li>Open <a href="https://t.me/BotFather" target="_blank">@BotFather</a> on Telegram.</li>
+        <li>Send <code>/newbot</code> and follow the prompts to create a new bot.</li>
+        <li>Copy the API token provided — it looks like <code>123456789:AAF...</code></li>
+      </ol>
+
+      <h2>Telegram API Credentials</h2>
+      <ol class="step-list">
+        <li>Go to <a href="https://my.telegram.org/auth?to=apps" target="_blank">my.telegram.org/auth</a></li>
+        <li>Log in, then fill out the form to create an app.</li>
+        <li>Copy both your <strong>API ID</strong> (a number) and your <strong>API Hash</strong> (a long string).</li>
+      </ol>
+
+      <h2>Your Telegram User ID</h2>
+      <p>Start a chat with <a href="https://t.me/userinfobot" target="_blank">@userinfobot</a> on Telegram. It will reply with your numeric user ID.</p>
+
+      <h2>GitHub Personal Access Token (PAT)</h2>
+      <ol class="step-list">
+        <li>Go to <a href="https://github.com/settings/tokens" target="_blank">GitHub → Settings → Tokens (classic)</a></li>
+        <li>Generate a new classic token. Give it repo access.</li>
+        <li>Copy the token — you won't see it again after leaving the page.</li>
+      </ol>
+
+      <h2>GMGN Wallet Private Key</h2>
+      <ol class="step-list">
+        <li>Go to <a href="https://gmgn.ai/portfolio" target="_blank">gmgn.ai/portfolio</a></li>
+        <li>Find the wallet you want to trade with (SOL, Robinhood, or both). GMGN creates default wallets — you can also import your own.</li>
+        <li>Click the three-dot menu on the wallet and choose to export the private key.</li>
+      </ol>
+
+      <h2>Helius API Key (Solana)</h2>
+      <ol class="step-list">
+        <li>Sign up at <a href="https://dashboard.helius.dev/signup" target="_blank">dashboard.helius.dev/signup</a></li>
+        <li>After the questionnaire, scroll down and select <strong>Continue with Free plan</strong>.</li>
+        <li>Go to <strong>API Keys</strong> and copy your key.</li>
+      </ol>
+
+      <h2>QuickNode RPC URL (Robinhood / EVM)</h2>
+      <ol class="step-list">
+        <li>Sign up at <a href="https://dashboard.quicknode.com/?prompt=signup" target="_blank">dashboard.quicknode.com</a>. If you see an error after signup, simply sign in again and verify your email.</li>
+        <li>Click <strong>Endpoints</strong>, then <strong>Create Endpoint</strong>.</li>
+        <li>Choose <strong>Robinhood → Robinhood Mainnet</strong>.</li>
+        <li>Copy the first URL under API Access URL. It looks like <code>https://xxx.robinhood.quiknode.pro/xxx/</code></li>
+      </ol>
+
+      <div class="callout">
+        <strong>Only need one chain?</strong>
+        You only need the Helius key for Solana trading and the QuickNode URL for Robinhood trading. You can skip whichever chain you don't plan to use — the bot lets you opt out during setup.
+      </div>
+    </div>
+
+
+    <!-- PAGE: setup-server -->
+    <div class="page" id="page-setup-server">
+      <h1>Server Setup</h1>
+      <p class="page-subtitle">The bot runs on a cloud server. This guide uses WispByte, a hosting provider with a free tier and simple configuration.</p>
+
+      <h2>Create a WispByte Server</h2>
+      <ol class="step-list">
+        <li>Go to <a href="https://wispbyte.com/client" target="_blank">wispbyte.com/client</a> and sign up.</li>
+        <li>Scroll down and click <strong>Create Server</strong>.</li>
+        <li>Choose a name for your server.</li>
+        <li>Choose a plan. The free plan works but requires reactivation every other week. The paid 1 GB RAM plan (~$13/month) is recommended for reliability.</li>
+        <li>Choose <strong>Python</strong> as the technology, then click Create.</li>
+      </ol>
+
+      <h2>Configure the Startup Settings</h2>
+      <ol class="step-list">
+        <li>Click <strong>Manage Server</strong> on your new server.</li>
+        <li>Under <strong>Configuration</strong>, go to <strong>Startup</strong> and fill in the following:</li>
+      </ol>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Git Repo Address</td><td><code>https://github.com/CopyTradersHub/GmGn-Bot-Telegram-Autobuy-Scraper</code></td></tr>
+            <tr><td>Git Branch</td><td><code>main</code></td></tr>
+            <tr><td>Auto Update</td><td><code>1</code></td></tr>
+            <tr><td>Git Username</td><td>Your GitHub username</td></tr>
+            <tr><td>Git Access Token</td><td>The PAT token you generated</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Clone the Repository</h2>
+      <ol class="step-list">
+        <li>Under <strong>General</strong>, go to <strong>GitHub</strong> and toggle on <strong>Auto Update on Startup</strong>.</li>
+        <li>Click <strong>Clone</strong>. On the free plan, if an ad appears, close the reward and click Clone again.</li>
+        <li>Wait until the clone is complete, then close.</li>
+        <li>Verify it worked: under <strong>Server Management → Files</strong> you should see new files from the repository.</li>
+      </ol>
+    </div>
+
+
+    <!-- PAGE: setup-activation -->
+    <div class="page" id="page-setup-activation">
+      <h1>Bot Activation</h1>
+      <p class="page-subtitle">Once the server is running, you'll be prompted to enter your credentials in order through the console.</p>
+
+      <h2>Start the Bot</h2>
+      <ol class="step-list">
+        <li>Under <strong>Server Management → Console</strong>, the bot may already be running or may have crashed on first boot.</li>
+        <li>Click <strong>Start</strong> to launch it.</li>
+        <li>Wait for the startup sequence. You'll see the license screen:<br><br>
+          <pre>============================================================
+TRADING BOT — LICENSE ACTIVATION
+============================================================</pre>
+        </li>
+      </ol>
+
+      <h2>Enter Your Keys</h2>
+      <p>The bot will prompt you for each key in this order. Enter each value and click Send:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Prompt</th><th>What to enter</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td>User ID</td><td>Your Telegram numeric user ID</td></tr>
+            <tr><td>2</td><td>License key</td><td>The license key received from admin. Wait for "Validating… OK"</td></tr>
+            <tr><td>3</td><td>BOT_TOKEN</td><td>Your BotFather API token</td></tr>
+            <tr><td>4</td><td>API_ID</td><td>From my.telegram.org</td></tr>
+            <tr><td>5</td><td>API_HASH</td><td>From my.telegram.org</td></tr>
+            <tr><td>6</td><td>USER_ID</td><td>Your Telegram numeric user ID</td></tr>
+            <tr><td>7</td><td>PHONE NUMBER</td><td>Your Telegram phone number with country code</td></tr>
+            <tr><td>8</td><td>2FA?</td><td>Type <code>Yes</code> if your Telegram account has 2-factor authentication, otherwise <code>No</code></td></tr>
+            <tr><td>8b</td><td>2FA pin</td><td>If you typed Yes above, enter your 2FA PIN</td></tr>
+            <tr><td>9</td><td>GMGN link</td><td>Copy the GMGN link from the bot. It opens a page where you enable trading (requires 2FA). Copy the generated key and paste it.</td></tr>
+            <tr><td>10</td><td>(confirmation)</td><td>Type anything and click Send, then do it again.</td></tr>
+            <tr><td>11</td><td>GMGN API key</td><td>Paste the key generated in step 9</td></tr>
+            <tr><td>12</td><td>Solana private key</td><td>The private key from your GMGN SOL wallet</td></tr>
+            <tr><td>13</td><td>Helius API key</td><td>Your Helius developer API key</td></tr>
+            <tr><td>14</td><td>Robinhood?</td><td>Type <code>No</code> to skip EVM, or <code>Yes</code> to continue</td></tr>
+            <tr><td>14b</td><td>EVM private key</td><td>If Yes, paste your EVM wallet private key</td></tr>
+            <tr><td>14c</td><td>QuickNode URL</td><td>If Yes, paste your QuickNode Robinhood endpoint URL</td></tr>
+            <tr><td>15</td><td>Confirm</td><td>Type <code>Yes</code></td></tr>
+            <tr><td>16</td><td>Telegram code</td><td>A code will be sent to your Telegram — paste it and send. You're now logged in.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout success">
+        <strong>Setup complete!</strong>
+        Once logged in, open your bot in Telegram. Before making your first trade, set a buy amount for each channel you add. You can also configure Stop Loss, Take Profit, and other parameters.
+      </div>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════
+         GLOBAL SETTINGS
+    ═══════════════════════════════════════ -->
+
+    <!-- PAGE: duplicate-detection -->
+    <div class="page" id="page-duplicate-detection">
+      <h1>Duplicate Detection</h1>
+      <p class="page-subtitle">Prevents the bot from buying the same token contract address (CA) more than once within a given window.</p>
+
+      <p>If the same contract address appears in multiple messages — across different channels or at different times — Duplicate Detection ensures you only enter once. This protects you from accidentally stacking positions on the same token.</p>
+
+      <h2>Permanent</h2>
+      <p>The bot records every CA it has ever bought and will never buy it again. There is no expiry — the block is permanent. (The bot does clean up records older than 1 year in the background, but in practice a CA will almost never resurface that long after launch.)</p>
+
+      <div class="callout success">
+        <strong>Recommended for most users</strong>
+        Permanent mode means each token is a one-time trade — you get in, and any future signals for that same CA are ignored. This is the default.
+      </div>
+
+      <h2>Timed</h2>
+      <p>Blocks a CA for a specific duration. After the timer expires, the same CA can trigger a fresh buy again.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Option</th><th>Block Duration</th></tr></thead>
+          <tbody>
+            <tr><td>1 Day</td><td>24 hours</td></tr>
+            <tr><td>1 Week</td><td>7 days</td></tr>
+            <tr><td>Custom</td><td>Any duration using format: <code>72H</code>, <code>2W</code>, <code>30M</code>, <code>3D</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Custom format:</strong> Enter a number followed by <code>M</code> (minutes), <code>H</code> (hours), <code>D</code> (days), or <code>W</code> (weeks).</p>
+
+      <p><strong>When to use Timed:</strong> Useful if you trade channels that call the same token at different times and you want the option to re-enter later. For most users tracking fresh launches, Permanent is the better choice.</p>
+
+      <div class="callout warning">
+        <strong>Note on switching modes</strong>
+        Switching from Timed back to Permanent does not clear existing timed records. Those addresses will still be blocked until their individual timers expire naturally.
+      </div>
+    </div>
+
+
+    <!-- PAGE: chain-selection -->
+    <div class="page" id="page-chain-selection">
+      <h1>Chain Selection</h1>
+      <p class="page-subtitle">Controls which blockchain networks the bot is active on. Each chain can be enabled or disabled independently.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Chain</th><th>Address Format</th><th>Execution</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td><strong>◎ SOL</strong> — Solana</td><td>Base58, 32–44 characters</td><td>GMGN using your Solana wallet</td><td><span class="badge badge-on">Enabled</span></td></tr>
+            <tr><td><strong>🟢 Robinhood</strong> — EVM L2</td><td><code>0x…</code> format, 40 hex chars</td><td>QuickNode RPC endpoint</td><td><span class="badge badge-on">Enabled</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>When a chain is <strong>disabled (❌)</strong>, the bot completely ignores contract addresses for that chain — even if they appear in a monitored channel. No validation, no trade attempt.</p>
+
+      <p>Both chains can be active simultaneously. If a message contains an address that matches both formats (rare), the bot will attempt it on whichever chain is enabled.</p>
+    </div>
+
+
+    <!-- PAGE: rug-shield -->
+    <div class="page" id="page-rug-shield">
+      <h1>Rug Shield</h1>
+      <p class="page-subtitle">A real-time exit system that monitors your open positions for danger signals and sells automatically if one is detected.</p>
+
+      <p>Rug Shield runs <em>after</em> you have already entered a position. It operates independently from your Stop Loss and Take Profit settings — think of it as a last-resort emergency exit triggered by on-chain events rather than price movements.</p>
+
+      <p>There are two independent Rug Shield modules. Both are on by default and can be toggled separately.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Module</th><th>Trigger</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td>Honeypot Shield</td><td>Dangerous on-chain instructions detected (freeze, authority change, new minting)</td><td><span class="badge badge-on">ON</span></td></tr>
+            <tr><td>Dev Sell Shield</td><td>Developer wallet balance drops 15%+ from your entry point</td><td><span class="badge badge-on">ON</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- PAGE: honeypot-shield -->
+    <div class="page" id="page-honeypot-shield">
+      <h1>Honeypot Shield</h1>
+      <p class="page-subtitle">Watches on-chain program logs for instructions that indicate the token is being turned into a trap.</p>
+
+      <p>The bot opens a persistent WebSocket connection to Solana's <code>logsSubscribe</code> for the token's smart contract. It watches for these specific instructions:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Instruction</th><th>What it means</th></tr></thead>
+          <tbody>
+            <tr><td><code>FreezeAccount</code></td><td>Developer freezes your wallet's ability to transfer the token</td></tr>
+            <tr><td><code>SetAuthority</code></td><td>Ownership or authority of the token program is being changed</td></tr>
+            <tr><td><code>MintTo</code> / <code>MintToChecked</code></td><td>New tokens are being minted, diluting the supply</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>What happens when triggered:</strong> The bot immediately executes a 100% sell of your position. There is no delay or confirmation — speed is the priority.</p>
+
+      <p><strong>Default:</strong> <span class="badge badge-on">ON</span></p>
+
+      <div class="callout warning">
+        <strong>When to turn it off</strong>
+        If you are intentionally trading tokens with special tokenomics that involve minting (rebase tokens, certain algorithmic stablecoins), Honeypot Shield may trigger false positives. Disable it only for those specific cases.
+      </div>
+    </div>
+
+
+    <!-- PAGE: dev-sell-shield -->
+    <div class="page" id="page-dev-sell-shield">
+      <h1>Dev Sell Shield</h1>
+      <p class="page-subtitle">Monitors the developer wallet's token balance and exits if they start dumping while you're holding.</p>
+
+      <p><strong>How it works:</strong> The moment you enter a position, the bot records how many tokens the deployer holds. It then watches their balance continuously.</p>
+
+      <p><strong>Trigger condition:</strong> If the deployer's token balance drops by <strong>15% or more</strong> from where it was when you entered, the bot treats this as a developer dump in progress and sells your entire position immediately.</p>
+
+      <div class="callout">
+        <strong>Example</strong>
+        You buy a token. At that moment the dev holds 1,000,000 tokens. If the bot detects the dev's balance has fallen to 849,999 or lower (a 15%+ drop), it exits your position.
+      </div>
+
+      <p><strong>Default:</strong> <span class="badge badge-on">ON</span></p>
+
+      <div class="callout warning">
+        <strong>When to turn it off</strong>
+        Some token setups involve the deployer wallet legitimately moving tokens to a vesting contract, a team wallet, or a DAO. If you know a particular project's deployer will be moving tokens for non-malicious reasons, you may want to disable this to avoid a premature exit.
+      </div>
+    </div>
+
+
+    <!-- PAGE: smart-fees -->
+    <div class="page" id="page-smart-fees">
+      <h1>Smart Fees</h1>
+      <p class="page-subtitle">Automatic fee calculation that replaces your manual slippage and priority fee with values calculated in real time.</p>
+
+      <p>Smart Fees has four components: the main toggle, exit fee escalation, an EVM gas ceiling, and native token fee reserves. All are described on their individual pages.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Setting</th><th>What it controls</th><th>Default</th></tr></thead>
+          <tbody>
+            <tr><td>Smart Fees Toggle</td><td>Enables dynamic slippage and fee calculation</td><td><span class="badge badge-on">ON</span></td></tr>
+            <tr><td>Exit Fee Escalation</td><td>Increases fees on retried auto-sells</td><td><span class="badge badge-on">ON</span></td></tr>
+            <tr><td>EVM Gas Ceiling</td><td>Maximum gwei the bot will ever pay on EVM trades</td><td>Configurable</td></tr>
+            <tr><td>Fee Reserve</td><td>Minimum native token balance kept in wallet at all times</td><td>Pre-configured at setup</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- PAGE: smart-fees-toggle -->
+    <div class="page" id="page-smart-fees-toggle">
+      <h1>Smart Fees Toggle</h1>
+      <p class="page-subtitle">When ON, the bot ignores your manually configured slippage and priority fee and calculates them dynamically at execution time.</p>
+
+      <p><strong>Default:</strong> <span class="badge badge-on">ON</span></p>
+
+      <h2>How the Calculation Works</h2>
+      <p>The bot runs two signals in parallel and uses the <strong>higher result</strong> of the two to ensure the transaction always lands.</p>
+
+      <h3>Signal 1 — Market Signal (via DexScreener)</h3>
+      <p>Looks at the token's current liquidity and recent price volatility.</p>
+
+      <h4>Slippage by Liquidity</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pool Liquidity</th><th>Base Slippage</th></tr></thead>
+          <tbody>
+            <tr><td>Under $5,000</td><td>30%</td></tr>
+            <tr><td>$5,000 – $20,000</td><td>22%</td></tr>
+            <tr><td>$20,000 – $75,000</td><td>15%</td></tr>
+            <tr><td>$75,000 – $250,000</td><td>10%</td></tr>
+            <tr><td>$250,000 – $1,000,000</td><td>6%</td></tr>
+            <tr><td>Over $1,000,000</td><td>3%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h4>Volatility Premium (added on top)</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>5-Minute Price Move</th><th>Extra Slippage Added</th></tr></thead>
+          <tbody>
+            <tr><td>Over 20%</td><td>+10%</td></tr>
+            <tr><td>10% – 20%</td><td>+6%</td></tr>
+            <tr><td>5% – 10%</td><td>+3%</td></tr>
+            <tr><td>2% – 5%</td><td>+1.5%</td></tr>
+            <tr><td>Under 2%</td><td>No addition</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Slippage is always capped between <strong>1% and 49%</strong> regardless of what the formula produces.</p>
+
+      <h4>Jito Tip (Solana only)</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Pool Liquidity</th><th>5m Price Change</th><th>Jito Tip</th></tr></thead>
+          <tbody>
+            <tr><td>Over $500,000</td><td>Over 10%</td><td>0.025 SOL</td></tr>
+            <tr><td>Over $100,000</td><td>Over 5%</td><td>0.012 SOL</td></tr>
+            <tr><td>Over $50,000</td><td>Over 2%</td><td>0.006 SOL</td></tr>
+            <tr><td>Over $10,000</td><td>Any</td><td>0.003 SOL</td></tr>
+            <tr><td>Any</td><td>Any</td><td>0.001 SOL (minimum)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Signal 2 — Network Signal (live chain data)</h3>
+      <p>Queries the blockchain directly to see what fees are actually landing right now.</p>
+      <ul>
+        <li><strong>Solana:</strong> Calls <code>getRecentPrioritizationFees</code> and takes the 75th percentile fee from recent transactions. Converts this to a Jito tip floor in SOL.</li>
+        <li><strong>EVM / Robinhood:</strong> Calls <code>eth_feeHistory</code> for the last 10 blocks and takes the 75th percentile priority fee. Final gas price = <code>(2 × latest base fee) + p75 priority fee</code>. The two-times buffer ensures the transaction doesn't expire if the base fee ticks up slightly.</li>
+      </ul>
+
+      <div class="callout">
+        The bot uses whichever signal produces the <strong>higher fee</strong>. If the market is calm but the network is congested (or vice versa), the bot still pays enough to land.
+      </div>
+    </div>
+
+
+    <!-- PAGE: exit-fee-escalation -->
+    <div class="page" id="page-exit-fee-escalation">
+      <h1>Exit Fee Escalation</h1>
+      <p class="page-subtitle">Automatically increases fees on each retry when an auto-sell fails to confirm on the first attempt.</p>
+
+      <p>When a Stop Loss, Take Profit, Rug Shield, or Expiry sell fails to land, Exit Fee Escalation increases the fee on each subsequent retry. This ensures the sell eventually confirms even during periods of high network congestion.</p>
+
+      <p>Without this, a failed sell might keep retrying at the same low fee and never confirm — leaving you stuck in a losing position while the price continues to fall.</p>
+
+      <p><strong>Default:</strong> <span class="badge badge-on">ON</span></p>
+
+      <div class="callout warning">
+        <strong>Recommendation</strong>
+        Leave this ON. The only reason to disable it is if you need exact fee predictability on exits, which is rarely more important than actually getting out of a position.
+      </div>
+    </div>
+
+
+    <!-- PAGE: evm-gas-ceiling -->
+    <div class="page" id="page-evm-gas-ceiling">
+      <h1>EVM Gas Ceiling</h1>
+      <p class="page-subtitle">A hard maximum gas price that the bot will ever pay on EVM / Robinhood trades, regardless of what Smart Fees calculates.</p>
+
+      <p><strong>Range:</strong> 1.0 to 500.0 gwei<br>
+      <strong>How to set:</strong> Tap the button and type a number. For example, <code>50</code> sets the ceiling at 50 gwei.</p>
+
+      <h2>Why it matters</h2>
+      <p>During extreme network congestion (such as a major market event), gas prices can spike dramatically. Without a ceiling, Smart Fees could calculate a very expensive gas price. The ceiling protects you from accidentally paying enormous fees on a single trade.</p>
+
+      <h2>Trade-off</h2>
+      <p>If the network is so congested that the required gas price exceeds your ceiling, the transaction will fail or be delayed. Set it high enough that you are rarely blocked, but low enough to protect against extreme spikes.</p>
+    </div>
+
+
+    <!-- PAGE: fee-reserve -->
+    <div class="page" id="page-fee-reserve">
+      <h1>Fee Reserve</h1>
+      <p class="page-subtitle">A minimum native token balance that must always remain in your wallet. The bot will not execute a trade if doing so would bring your balance below this amount.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Reserve</th><th>Token</th><th>Range</th></tr></thead>
+          <tbody>
+            <tr><td>◎ SOL Fee Reserve</td><td>SOL</td><td>0.000 – 1.000 SOL</td></tr>
+            <tr><td>Ξ EVM Fee Reserve</td><td>ETH / native EVM token</td><td>0.000 – 1.000</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Why it matters</h2>
+      <p>Every trade costs gas fees paid in the native token (SOL or ETH). If your wallet is completely drained by trades, you would have no gas left to sell existing positions. The reserve ensures there is always enough native token to cover exit transactions.</p>
+
+      <div class="callout">
+        <strong>Example</strong>
+        If your SOL reserve is 0.01 SOL and your wallet has 0.012 SOL, the bot will not execute a buy — it would leave only 0.002 SOL, below the reserve. This protects your ability to sell existing positions.
+      </div>
+
+      <p><strong>Default:</strong> A small amount is pre-configured at setup. Adjust it based on how much you typically spend on fees per trade.</p>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════
+         SOURCE MONITOR
+    ═══════════════════════════════════════ -->
+
+    <!-- PAGE: add-channel -->
+    <div class="page" id="page-add-channel">
+      <h1>Adding a Channel</h1>
+      <p class="page-subtitle">The Source Monitor is where you manage which Telegram channels or groups the bot watches for contract addresses.</p>
+
+      <h2>How to add a channel</h2>
+      <ol class="step-list">
+        <li>Open the bot and tap <strong>Add Channel</strong>.</li>
+        <li>Send the bot a link to any Telegram channel or group you want to monitor.</li>
+        <li>The bot will begin watching that channel from that point forward.</li>
+      </ol>
+
+      <p>Once added, the channel appears in the Source Monitor list. Tap a channel name to open and configure its settings.</p>
+
+      <div class="callout">
+        Each channel has its own independent set of trading parameters — buy amount, slippage, stop loss, take profit, and filters. These per-channel settings override your global defaults only for trades triggered by that specific channel.
+      </div>
+    </div>
+
+
+    <!-- PAGE: sol-channel -->
+    <div class="page" id="page-sol-channel">
+      <h1>SOL Channel Settings</h1>
+      <p class="page-subtitle">Per-channel trading parameters for the Solana chain. These override your global defaults for trades triggered by this specific channel.</p>
+
+      <p>Tap any channel name in the Source Monitor to open its settings. Each of the following pages covers one configurable parameter within a SOL channel.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Setting</th><th>Purpose</th></tr></thead>
+          <tbody>
+            <tr><td>Buy Amount</td><td>How much SOL to spend per trade</td></tr>
+            <tr><td>Slippage</td><td>Maximum price impact you'll accept</td></tr>
+            <tr><td>Priority Fee</td><td>SOL tip paid to validators for faster inclusion</td></tr>
+            <tr><td>Anti-MEV</td><td>Routes through Jito to avoid sandwich attacks</td></tr>
+            <tr><td>Stop Loss</td><td>Automatic sell on price drop</td></tr>
+            <tr><td>Take Profit</td><td>Automatic sell on price gain</td></tr>
+            <tr><td>Safety Filters</td><td>Pre-buy checks that block risky tokens</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- PAGE: buy-amount -->
+    <div class="page" id="page-buy-amount">
+      <h1>Buy Amount</h1>
+      <p class="page-subtitle">The fixed amount of SOL to spend on every buy triggered by this channel.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Option</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>Presets</td><td>0.01 / 0.05 / 0.1 / 0.2 / 0.5 / 1.0 SOL</td></tr>
+            <tr><td>Custom Amount</td><td>Tap "Custom Amount" and type any value, e.g. <code>0.35</code></td></tr>
+            <tr><td>Use Default</td><td>Removes the channel override and falls back to your global buy amount</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warning">
+        <strong>Important</strong>
+        This is the amount of SOL you spend per trade — not the amount of tokens you receive. Tokens received will vary based on the token's current price and your slippage setting.
+      </div>
+    </div>
+
+
+    <!-- PAGE: slippage -->
+    <div class="page" id="page-slippage">
+      <h1>Slippage</h1>
+      <p class="page-subtitle">The maximum price impact you will accept for a trade to execute. If the trade would move the price more than this percentage, the transaction reverts.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Option</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>Presets</td><td>1% / 3% / 5% / 10% / 15% / 20% / 30%</td></tr>
+            <tr><td>Custom</td><td>Tap "Custom" and enter any percentage</td></tr>
+            <tr><td>Use Default</td><td>Falls back to the global slippage setting</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>Note</strong>
+        This setting only applies when Smart Fees is <strong>OFF</strong>. When Smart Fees is ON, the bot calculates slippage automatically and ignores this value.
+      </div>
+
+      <h2>Guidance</h2>
+      <ul>
+        <li><strong>When to increase slippage:</strong> Low-liquidity or highly volatile tokens often require 15–30% slippage to execute. A transaction that fails at 10% will often succeed at 20–25%.</li>
+        <li><strong>Risk of high slippage:</strong> High slippage tolerance means you accept a worse fill price. It also makes you more vulnerable to sandwich bot attacks. Enable Anti-MEV to mitigate this.</li>
+      </ul>
+    </div>
+
+
+    <!-- PAGE: priority-fee -->
+    <div class="page" id="page-priority-fee">
+      <h1>Priority Fee</h1>
+      <p class="page-subtitle">An additional SOL tip paid to validators to prioritize your transaction above others in the queue.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Option</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>Presets</td><td>0.001 / 0.003 / 0.005 / 0.006 / 0.01 / 0.02 / 0.05 SOL</td></tr>
+            <tr><td>Custom</td><td>Tap "Custom" and enter any SOL amount</td></tr>
+            <tr><td>Use Default</td><td>Falls back to the global priority fee setting</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>Note</strong>
+        When Smart Fees is ON, this setting is overridden by the bot's automatic calculation.
+      </div>
+
+      <h2>Guidance</h2>
+      <p><strong>0.003–0.006 SOL</strong> covers most normal conditions. During heavy network load or for fast-moving tokens where being first matters, <strong>0.01–0.025 SOL</strong> ensures your transaction lands ahead of others.</p>
+    </div>
+
+
+    <!-- PAGE: anti-mev -->
+    <div class="page" id="page-anti-mev">
+      <h1>Anti-MEV</h1>
+      <p class="page-subtitle">Routes your transaction through Jito's private bundle system to prevent MEV bots from seeing and front-running your trade.</p>
+
+      <p><strong>Default:</strong> <span class="badge badge-on">ON</span></p>
+
+      <h2>What is a sandwich attack?</h2>
+      <p>An MEV bot detects your pending buy in the public mempool, places its own buy just before yours (driving up the price), lets your buy fill at the inflated price, then immediately sells. Anti-MEV makes your transaction invisible to these bots until it confirms.</p>
+
+      <div class="callout success">
+        <strong>Recommendation</strong>
+        Keep Anti-MEV ON, especially when trading tokens with limited liquidity where sandwich attacks are most profitable for attackers. There is no meaningful downside to leaving it enabled.
+      </div>
+    </div>
+
+
+    <!-- PAGE: stop-loss -->
+    <div class="page" id="page-stop-loss">
+      <h1>Stop Loss</h1>
+      <p class="page-subtitle">Automatically sells your position when the price drops by a set amount after you enter.</p>
+
+      <p>Stop Loss has three modes: None, Once, and Segmented. All modes share the same Expiry timer and Auto-Sell toggle.</p>
+
+      <h2>None</h2>
+      <p>Stop Loss monitoring is disabled. Once you buy a token, the bot will not sell based on price drops. You would need to sell manually from the Positions menu.</p>
+
+      <h2>Once</h2>
+      <p>Sets a single price drop percentage. When the token's price falls that far below your entry price, the bot sells 100% of your position immediately.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Option</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>Presets</td><td>5% / 10% / 15% / 20% / 25% / 30% / 50%</td></tr>
+            <tr><td>Custom</td><td>Tap "Custom %" and enter any number</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>Example</strong>
+        You buy at $1.00 and set Stop Loss Once at 20%. If the price falls to $0.80 (a 20% drop from entry), the bot sells everything.
+      </div>
+
+      <h2>Segmented</h2>
+      <p>Sells your position in multiple chunks at different price levels, rather than selling everything at once. You can create up to 6 segments.</p>
+
+      <p><strong>How to set it up:</strong> After selecting Segmented, add segments one at a time. For each segment specify:</p>
+      <ul>
+        <li>The % drop from entry that triggers this sell (e.g., <code>-15</code>)</li>
+        <li>What portion of your <strong>remaining</strong> position to sell at that level (e.g., <code>50%</code>)</li>
+      </ul>
+
+      <div class="callout">
+        <strong>Example setup</strong>
+        <ul style="margin-top:8px">
+          <li>Segment 1: Price drops 15% → sell 50% of position</li>
+          <li>Segment 2: Price drops 25% → sell 100% of remaining</li>
+        </ul>
+        If the price drops 15% you reduce your exposure. If it continues falling to 25% you exit completely. If it recovers after segment 1 fires, you still hold the other 50%.
+      </div>
+
+      <hr>
+
+      <h2>Expiry</h2>
+      <p>Sets a time limit on how long the bot monitors your position for Stop Loss (and Take Profit — they share the same timer). After the expiry time passes, monitoring stops.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Option</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>Presets</td><td>Common hour values shown as quick-tap options</td></tr>
+            <tr><td>Custom Hours</td><td>Type any number between 1 and 240 (10 days maximum)</td></tr>
+            <tr><td>Default</td><td>120 hours (5 days)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Expiry does <strong>not</strong> sell your position when it triggers — it just stops watching. To sell automatically at expiry, use the Auto-Sell toggle below.</p>
+
+      <h2>Auto-Sell Toggle</h2>
+      <p>When <strong>ON</strong>, the bot executes a full (100%) sell of your position the moment the Expiry timer runs out, regardless of whether any price target was hit.</p>
+
+      <p><strong>Default:</strong> <span class="badge badge-off">OFF</span></p>
+
+      <p><strong>When to use this:</strong> If you are trading short-term setups and do not want to hold a position indefinitely, enabling Auto-Sell with a set expiry (e.g., 24 hours) ensures you always exit within your time window.</p>
+    </div>
+
+
+    <!-- PAGE: take-profit -->
+    <div class="page" id="page-take-profit">
+      <h1>Take Profit</h1>
+      <p class="page-subtitle">Automatically sells your position when the price rises by a set amount after you enter.</p>
+
+      <p>Take Profit has three modes: None, Once, and Trailing Stop. All modes share the same Expiry timer and Auto-Sell toggle as Stop Loss.</p>
+
+      <h2>None</h2>
+      <p>Take Profit monitoring is disabled. The bot will not sell based on price gains.</p>
+
+      <h2>Once</h2>
+      <p>Sets a single price increase percentage. When the token's price rises that far above your entry price, the bot sells 100% of your position.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Option</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>Presets</td><td>10% / 25% / 50% / 100% / 200% / 500% / 1000%</td></tr>
+            <tr><td>Custom</td><td>Tap "Custom %" and enter any number</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>Example</strong>
+        You buy at $1.00 and set Take Profit Once at 100%. If the price reaches $2.00, the bot sells everything.
+      </div>
+
+      <h2>Trailing Stop</h2>
+      <p>Instead of selling at a fixed price, the bot continuously tracks the <strong>highest price</strong> the token reaches after your entry. If the price then retraces (falls back) from that peak by a set percentage, the bot sells.</p>
+
+      <p>This allows you to capture upside beyond a fixed target — if a token keeps climbing, your effective exit price climbs with it.</p>
+
+      <h3>Retrace %</h3>
+      <p>How far the price must fall from the peak to trigger the sell.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Option</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>Presets</td><td>10% / 15% / 20% / 25% / 30% / 50%</td></tr>
+            <tr><td>Custom</td><td>Enter any percentage</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>Example (20% retrace)</strong>
+        Token peaks at $2.00. The sell triggers if the price falls to $1.60 or below (20% below the $2.00 peak).
+      </div>
+
+      <h3>Activation Price</h3>
+      <p>A minimum gain from entry before the trailing stop begins tracking the peak. Until this gain is reached, the bot does nothing — it waits for the token to rise enough before arming the trailing logic.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Option</th><th>Details</th></tr></thead>
+          <tbody>
+            <tr><td>Presets</td><td>+10% / +20% / +50% / +100% / +200%</td></tr>
+            <tr><td>None</td><td>"Activate immediately" — trailing begins tracking from the moment of entry</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <strong>Example (50% activation + 20% retrace)</strong>
+        You buy at $1.00. The trailing stop does not arm until the price reaches $1.50. Once armed, the bot tracks the peak and sells if the price drops 20% from wherever the peak ends up.
+      </div>
+
+      <div class="callout warning">
+        <strong>Why use Activation?</strong>
+        Without activation, a token that dips 20% right after you buy (before any gain) would trigger a trailing sell. Setting an activation level ensures you only trail after a meaningful gain — protecting you from normal early volatility.
+      </div>
+
+      <h2>Segmented Take Profit</h2>
+      <p>Same concept as Segmented Stop Loss but for price increases. Set up to 6 levels, each selling a portion of your remaining position at a different gain percentage.</p>
+
+      <div class="callout">
+        <strong>Example setup</strong>
+        <ul style="margin-top:8px">
+          <li>Segment 1: Price rises 50% → sell 25% (lock in initial profit)</li>
+          <li>Segment 2: Price rises 100% → sell 50% of remaining (take more at 2×)</li>
+          <li>Segment 3: Price rises 300% → sell 100% of remaining (full exit at 4×)</li>
+        </ul>
+      </div>
+    </div>
+
+
+    <!-- PAGE: safety-filters -->
+    <div class="page" id="page-safety-filters">
+      <h1>Safety Filters</h1>
+      <p class="page-subtitle">Pre-buy checks that run on every token the bot detects. If a token fails any enabled filter, the trade is cancelled and you are notified why.</p>
+
+      <p>Each filter can be independently set to a value or turned <strong>Off</strong> (meaning no restriction for that filter).</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Filter</th><th>What it checks</th></tr></thead>
+          <tbody>
+            <tr><td>Market Cap Min</td><td>Token market cap must be at or above this value</td></tr>
+            <tr><td>Market Cap Max</td><td>Token market cap must be at or below this value</td></tr>
+            <tr><td>Liquidity Min</td><td>Trading pool must hold at least this much USD liquidity</td></tr>
+            <tr><td>Holders Min</td><td>Token must have at least this many unique holders</td></tr>
+            <tr><td>Top 10% Max</td><td>Top 10 holders cannot hold more than this % of supply</td></tr>
+            <tr><td>Dev Holding Max</td><td>Developer wallet cannot hold more than this % of supply</td></tr>
+            <tr><td>LP Burn Min</td><td>At least this % of LP tokens must be burned or locked</td></tr>
+            <tr><td>Token Age Min</td><td>Token must have been deployed at least this many hours ago</td></tr>
+            <tr><td>Honeypot</td><td>Blocks tokens flagged as honeypots by detection scan</td></tr>
+            <tr><td>Mintable</td><td>Blocks tokens where new minting is still possible</td></tr>
+            <tr><td>Freeze Auth</td><td>Blocks tokens with an active freeze authority</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr>
+
+      <h2>Market Cap Min</h2>
+      <p>The token's current market cap must be at or above this value at the moment the trade would execute.</p>
+      <p><strong>Presets:</strong> $1K / $5K / $10K / $50K / $100K / $500K / $1M / $5M | <strong>Custom:</strong> enter any USD value</p>
+      <p><strong>Use case:</strong> Filters out tokens so early-stage they have no meaningful price discovery yet.</p>
+
+      <hr>
+
+      <h2>Market Cap Max</h2>
+      <p>The token's market cap must be at or below this value. Lets you focus on earlier-stage tokens and avoid buying into tokens that have already run significantly.</p>
+      <p><strong>Presets:</strong> $100K / $500K / $1M / $5M / $10M / $50M / $100M</p>
+
+      <hr>
+
+      <h2>Liquidity Min</h2>
+      <p>The token's trading pool must contain at least this much liquidity in USD. Low liquidity means high price impact and is a common characteristic of scam tokens.</p>
+      <p><strong>Input:</strong> Type a USD value. Example: <code>5000</code> means the pool must hold at least $5,000.</p>
+      <p><strong>Recommended minimum:</strong> $5,000–$10,000. Very low liquidity (under $1,000) means even small buys will move the price significantly.</p>
+
+      <hr>
+
+      <h2>Holders Min</h2>
+      <p>The token must have at least this many unique wallet addresses holding it. Very few holders can indicate a fresh launch that hasn't spread to real buyers yet, or a concentrated position that's easy to dump.</p>
+      <p><strong>Input:</strong> Type a number. Example: <code>100</code> requires at least 100 holders.</p>
+
+      <hr>
+
+      <h2>Top 10% Max</h2>
+      <p>The top 10 holders combined cannot hold more than this percentage of the total supply. High concentration in few wallets means a coordinated dump could devastate the price.</p>
+      <p><strong>Input:</strong> Type a percentage (0–100). Example: <code>60</code> means the top 10 wallets cannot collectively hold over 60% of supply.</p>
+
+      <hr>
+
+      <h2>Dev Holding Max</h2>
+      <p>The developer/creator wallet cannot hold more than this percentage of the total token supply. A dev holding a large percentage of supply is a significant dump risk.</p>
+      <p><strong>Input:</strong> Type a percentage (0–100). Example: <code>15</code> means the dev cannot hold more than 15% of supply.</p>
+
+      <hr>
+
+      <h2>LP Burn Min</h2>
+      <p>At least this percentage of the liquidity pool (LP) tokens must be burned or permanently locked. When LP tokens are not burned, the developer can withdraw the liquidity at any time (a "rug pull"), crashing the token price to near zero.</p>
+      <p><strong>Presets:</strong> 80% / 90% / 95% / 100% | <strong>Custom:</strong> enter any percentage</p>
+      <p><strong>Recommended:</strong> 90–100% if rug protection is important to you. Many legitimate long-term projects burn 100% of LP.</p>
+
+      <hr>
+
+      <h2>Token Age Min</h2>
+      <p>The token must have been deployed at least this many hours ago. Very new tokens (under 1 hour old) are often in the most dangerous phase — early snipers and dev bots are most active in the first few minutes.</p>
+      <p><strong>Presets:</strong> 1h / 2h / 6h / 12h / 24h / 48h / 3d / 7d | <strong>Custom:</strong> enter any number of hours</p>
+
+      <hr>
+
+      <h2>Honeypot Toggle</h2>
+      <p>Runs a honeypot detection check before buying. A honeypot is a token designed so you can buy but not sell — the sell function is deliberately broken or gated.</p>
+      <p><strong>ON:</strong> Tokens flagged as honeypots are blocked. | <strong>OFF:</strong> No check.</p>
+      <div class="callout warning">Keep this ON at all times unless you have a very specific reason to trade a token that a honeypot scanner flags incorrectly.</div>
+
+      <hr>
+
+      <h2>Mintable Toggle</h2>
+      <p>Checks whether the token's contract allows new tokens to be minted after the initial supply. A mintable token can have its supply inflated at any time, diluting the value of existing holders.</p>
+      <p><strong>ON:</strong> Tokens where minting is still possible are blocked. | <strong>OFF:</strong> No mintability check.</p>
+
+      <hr>
+
+      <h2>Freeze Auth Toggle</h2>
+      <p>Checks whether a freeze authority exists on the token. A freeze authority allows the token deployer to freeze your specific wallet's token balance, preventing you from selling.</p>
+      <p><strong>ON:</strong> Tokens with an active freeze authority are blocked. | <strong>OFF:</strong> No freeze authority check.</p>
+    </div>
+
+
+    <!-- PAGE: robinhood-channel -->
+    <div class="page" id="page-robinhood-channel">
+      <h1>Robinhood Channel Settings</h1>
+      <p class="page-subtitle">Robinhood (EVM L2) channel settings follow the same structure as SOL settings with a few key differences.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Setting</th><th>Difference from SOL</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Buy Amount</strong></td><td>Amount is in ETH (native EVM token) rather than SOL. Same presets and custom entry apply.</td></tr>
+            <tr><td><strong>Slippage</strong></td><td>Same presets and behavior as SOL. Controls maximum price impact for EVM trades.</td></tr>
+            <tr><td><strong>Gas Price</strong></td><td>Instead of a Jito priority fee, EVM trades use a gas price in <strong>gwei</strong>. Higher gas = faster confirmation during congestion.</td></tr>
+            <tr><td><strong>Anti-MEV</strong></td><td>On EVM chains, routes transactions to reduce public mempool exposure. The mechanism differs from Solana's Jito bundles (Robinhood is an L2), but the intent is the same: reduce frontrunning exposure.</td></tr>
+            <tr><td><strong>Stop Loss</strong></td><td>Identical in function to the SOL equivalent. All percentage-based calculations work the same way.</td></tr>
+            <tr><td><strong>Take Profit</strong></td><td>Identical in function to the SOL equivalent.</td></tr>
+            <tr><td><strong>Safety Filters</strong></td><td>Identical in function to the SOL equivalent.</td></tr>
+            <tr><td><strong>Dynamic Filters</strong></td><td>Identical in function to the SOL equivalent.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- PAGE: disable-channel -->
+    <div class="page" id="page-disable-channel">
+      <h1>Disable Channel</h1>
+      <p class="page-subtitle">Pause monitoring of a channel without removing it or losing any of its settings.</p>
+
+      <p>When a channel is disabled, the bot completely ignores all messages from it. Tap <strong>Disable Channel</strong> to toggle it off. Tap again to re-enable it. All your configured settings (buy amount, slippage, filters, etc.) are preserved exactly as you left them.</p>
+
+      <div class="callout success">
+        <strong>When to use this</strong>
+        If you want to temporarily stop trading from a specific source — for example, during a period when you know the channel's calls are low quality — without having to set everything up again later. Use Disable instead of Remove whenever possible.
+      </div>
+
+      <div class="callout warning">
+        <strong>Disable vs. Remove</strong>
+        Disabling a channel preserves all its settings and can be reversed. Removing a channel is permanent and deletes all settings. Always use Disable if you might want to re-enable the channel later.
+      </div>
+    </div>
+
+
+    <!-- PAGE: filter-mode -->
+    <div class="page" id="page-filter-mode">
+      <h1>Filter Mode</h1>
+      <p class="page-subtitle">Controls whose messages in a channel the bot will process. This applies before any content analysis — messages from users who don't pass the filter are never scanned for contract addresses.</p>
+
+      <h2>All Messages</h2>
+      <p>The bot processes every single message posted in the channel, regardless of who sent it.</p>
+      <p><strong>Use this when:</strong> The channel is a personal alert channel you control, or every member of the group is trusted to post calls.</p>
+
+      <h2>Admin Only</h2>
+      <p>The bot only processes messages sent by administrators of the channel or group. When a new message arrives, the bot checks whether the sender is in the admin list. Non-admin messages are silently ignored.</p>
+      <p><strong>Use this when:</strong> You follow a channel where the main caller is an admin but other members also post, and you only want to act on the admin's signals.</p>
+
+      <h2>Specific User</h2>
+      <p>The bot only processes messages from a predefined list of specific Telegram User IDs that you provide.</p>
+      <p><strong>Use this when:</strong> You have a group where only certain trusted individuals post actionable calls, or you want to whitelist yourself in a private group.</p>
+
+      <div class="callout">
+        <strong>How to find a user's Telegram ID</strong>
+        Message <a href="https://t.me/userinfobot" target="_blank">@userinfobot</a> and forward a message from the person whose ID you want. The bot will reply with their numeric user ID.
+      </div>
+    </div>
+
+
+    <!-- PAGE: dynamic-filters -->
+    <div class="page" id="page-dynamic-filters">
+      <h1>Dynamic Filters</h1>
+      <p class="page-subtitle">Content rules that a message must satisfy before the bot considers trading the contract address found in it.</p>
+
+      <p>If a message contains a valid contract address but fails your dynamic filters, the trade is aborted. This is useful when a channel posts many types of signals and you only want to trade when specific conditions in the message are met.</p>
+
+      <h2>How filtering works</h2>
+      <p>Every dynamic filter you add is checked against the message text. The logic is:</p>
+      <ul>
+        <li>If <strong>any</strong> single filter passes → trade proceeds</li>
+        <li>If <strong>none</strong> pass → trade is cancelled</li>
+        <li>Individual filters use <strong>OR logic</strong> with each other</li>
+        <li>A Multi-Filter group uses <strong>AND logic</strong> internally (all conditions in the group must pass)</li>
+      </ul>
+
+      <p>See the sub-pages for full instructions on adding single filters and multi-filter groups.</p>
+    </div>
+
+
+    <!-- PAGE: add-filter -->
+    <div class="page" id="page-add-filter">
+      <h1>Add Filter</h1>
+      <p class="page-subtitle">A single-condition dynamic filter using a bracket template from a real channel message.</p>
+
+      <h2>The Bracket Format</h2>
+      <p>Copy a real sample message from your channel. Then wrap two things in square brackets:</p>
+      <ol>
+        <li>The <strong>label</strong> — the keyword or phrase that appears before the value you care about</li>
+        <li>The <strong>value</strong> — the actual number or word you want to set a rule on</li>
+      </ol>
+
+      <h2>Numeric Conditions</h2>
+      <p>For filtering on a number in the message (buy volume, market cap, etc.):</p>
+      <pre>/dynamic [Label:] [Number]</pre>
+
+      <p><strong>Example</strong> — your channel sends messages like:</p>
+      <pre>Last 3 mins buy: 122 SOL
+Rating: High
+in 95 buys</pre>
+
+      <p>To filter on the SOL volume, send:</p>
+      <pre>/dynamic Last 3 mins buy: 122 SOL [SOL] [122]</pre>
+
+      <p>The bot will ask you to set a rule — for example, "greater than 50" means the trade only happens if the SOL value found in the message is above 50.</p>
+
+      <h2>Text / Keyword Conditions</h2>
+      <p>For filtering on a word or rating in the message:</p>
+      <pre>/dynamic [Label:] [Word]</pre>
+
+      <p><strong>Example</strong> — to filter only for "High" ratings:</p>
+      <pre>/dynamic Rating: High [Rating:] [High]</pre>
+
+      <p>The bot creates a filter that checks the word after "Rating:" and only allows the trade if it matches "High" (case-insensitive).</p>
+
+      <h2>How the bot reads your template</h2>
+      <p>The bot uses the first bracket as the label to search for in the message. Once it finds that label, it extracts whatever value appears immediately after it (the position defined by your second bracket). For numeric filters it compares the extracted number against your rule. For text filters it checks whether the extracted word matches your allowed values.</p>
+
+      <div class="callout warning">
+        If the label cannot be found in a message, the filter fails and the trade is blocked.
+      </div>
+    </div>
+
+
+    <!-- PAGE: multi-filter -->
+    <div class="page" id="page-multi-filter">
+      <h1>Multi-Filter (AND Logic)</h1>
+      <p class="page-subtitle">A group filter where all conditions must be true in the same message for the trade to proceed.</p>
+
+      <p>If even one condition in the group fails, the entire group fails. This is different from adding multiple single filters (which use OR logic between them).</p>
+
+      <h2>How to set it up</h2>
+      <p>Tap <strong>Add Multi-Filter (AND)</strong> then send the <code>/multidynamic</code> command followed by multiple template lines, one per line:</p>
+
+      <pre>/multidynamic
+Last 3 mins buy: 122 SOL [SOL] [122]
+Rating: High [Rating:] [High]
+in 95 buys [buys] [95]</pre>
+
+      <p>This creates a single filter group that requires all three conditions to be satisfied:</p>
+      <ul>
+        <li>The SOL buy volume must be present and pass your numeric rule</li>
+        <li>"Rating:" must be followed by "High"</li>
+        <li>The buys count must be present and pass your numeric rule</li>
+      </ul>
+
+      <h2>Combining single and multi-filters</h2>
+      <p>You can have a mix of single filters and multi-filter groups active at the same time. The overall result is:</p>
+
+      <div class="callout">
+        <strong>If any filter or group passes → trade proceeds.</strong>
+        <br>This gives you flexible OR logic at the top level with AND logic inside each multi-filter group.
+      </div>
+
+      <p><strong>Example:</strong> If you add a single SOL volume filter AND a multi-filter group, the trade proceeds if either the single filter passes OR the entire group passes. You can use this to define a "basic" condition and a "full signal" condition simultaneously.</p>
+    </div>
+
+
+    <!-- PAGE: remove-channel -->
+    <div class="page" id="page-remove-channel">
+      <h1>Remove Channel</h1>
+      <p class="page-subtitle">Permanently deletes the channel from the bot's monitoring list and erases all settings associated with it.</p>
+
+      <div class="callout danger">
+        <strong>This action cannot be undone.</strong>
+        All configured settings for the channel — buy amount, slippage, stop loss, take profit, filters — will be permanently deleted.
+      </div>
+
+      <p>If you just want to pause a channel temporarily, use <strong>Disable Channel</strong> instead. Remove Channel should only be used when you are certain you will never want to trade this channel again.</p>
+    </div>
+
+
+    <!-- ═══════════════════════════════════════
+         POSITIONS
+    ═══════════════════════════════════════ -->
+
+    <!-- PAGE: positions -->
+    <div class="page" id="page-positions">
+      <h1>Positions</h1>
+      <p class="page-subtitle">View all token positions the bot currently has open and is actively monitoring for Stop Loss or Take Profit conditions.</p>
+
+      <p>The Positions section is split by chain. Open it to see all active trades and their current monitoring status.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Section</th><th>Chain</th></tr></thead>
+          <tbody>
+            <tr><td>Solana Positions</td><td>Solana (SOL) — base58 addresses</td></tr>
+            <tr><td>Robinhood Positions</td><td>EVM / Robinhood L2 — 0x addresses</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+    <!-- PAGE: sol-positions -->
+    <div class="page" id="page-sol-positions">
+      <h1>Solana Positions</h1>
+      <p class="page-subtitle">Lists all active Solana token positions. Each position shows the token address and the current monitoring status.</p>
+
+      <h2>Sell 100%</h2>
+      <p>Tapping <strong>Sell 100%</strong> on a position immediately sends a market sell order for your entire holding of that token. The sell executes at the current market price regardless of where you are relative to your entry.</p>
+
+      <h3>When to use this</h3>
+      <ul>
+        <li>You want to exit a position manually before the Stop Loss or Take Profit fires</li>
+        <li>You want to close a position that has no SL/TP configured</li>
+        <li>The monitoring expired and you are deciding whether to exit</li>
+      </ul>
+    </div>
+
+
+    <!-- PAGE: robinhood-positions -->
+    <div class="page" id="page-robinhood-positions">
+      <h1>Robinhood Positions</h1>
+      <p class="page-subtitle">Lists all active EVM / Robinhood chain positions.</p>
+
+      <h2>Sell 100%</h2>
+      <p>Same function as the Solana equivalent — immediately sells 100% of the position at the current market price on the EVM chain.</p>
+
+      <div class="callout warning">
+        <strong>Dust positions on EVM</strong>
+        On EVM chains, if a position shows a very small value (dust), selling may cost more in gas than the position is worth. In that case you may choose to leave it rather than paying gas to close it. You can remove a position from tracking without selling by using the close/remove option for that position if available.
+      </div>
+    </div>
+
+
+    <!-- ══════════ PREV / NEXT NAV ══════════ -->
+    <div id="page-nav">
+      <a class="nav-btn" id="btn-prev" style="display:none">
+        <div class="nav-btn-label">Previous</div>
+        <div class="nav-btn-title" id="prev-title"></div>
+      </a>
+      <div class="nav-btn-spacer" id="spacer-prev"></div>
+      <a class="nav-btn right" id="btn-next" style="display:none">
+        <div class="nav-btn-label">Next</div>
+        <div class="nav-btn-title" id="next-title"></div>
+      </a>
+    </div>
+
+  </div><!-- /#content -->
+</div><!-- /#main -->
+
+<script>
+  // ── Page order for prev/next navigation ──
+  const PAGE_ORDER = [
+    { id: "introduction",       label: "Introduction" },
+    { id: "setup",              label: "Setup Guide" },
+    { id: "setup-keys",        label: "Keys You'll Need" },
+    { id: "setup-server",      label: "Server Setup" },
+    { id: "setup-activation",  label: "Bot Activation" },
+    { id: "duplicate-detection", label: "Duplicate Detection" },
+    { id: "chain-selection",   label: "Chain Selection" },
+    { id: "rug-shield",        label: "Rug Shield" },
+    { id: "honeypot-shield",   label: "Honeypot Shield" },
+    { id: "dev-sell-shield",   label: "Dev Sell Shield" },
+    { id: "smart-fees",        label: "Smart Fees" },
+    { id: "smart-fees-toggle", label: "Smart Fees Toggle" },
+    { id: "exit-fee-escalation", label: "Exit Fee Escalation" },
+    { id: "evm-gas-ceiling",   label: "EVM Gas Ceiling" },
+    { id: "fee-reserve",       label: "Fee Reserve" },
+    { id: "add-channel",       label: "Adding a Channel" },
+    { id: "sol-channel",       label: "SOL Channel Settings" },
+    { id: "buy-amount",        label: "Buy Amount" },
+    { id: "slippage",          label: "Slippage" },
+    { id: "priority-fee",      label: "Priority Fee" },
+    { id: "anti-mev",          label: "Anti-MEV" },
+    { id: "stop-loss",         label: "Stop Loss" },
+    { id: "take-profit",       label: "Take Profit" },
+    { id: "safety-filters",    label: "Safety Filters" },
+    { id: "robinhood-channel", label: "Robinhood Channel Settings" },
+    { id: "disable-channel",   label: "Disable Channel" },
+    { id: "filter-mode",       label: "Filter Mode" },
+    { id: "dynamic-filters",   label: "Dynamic Filters" },
+    { id: "add-filter",        label: "Add Filter" },
+    { id: "multi-filter",      label: "Multi-Filter (AND Logic)" },
+    { id: "remove-channel",    label: "Remove Channel" },
+    { id: "positions",         label: "Positions Overview" },
+    { id: "sol-positions",     label: "Solana Positions" },
+    { id: "robinhood-positions", label: "Robinhood Positions" },
+  ];
+
+  let currentPage = "introduction";
+
+  function navigateTo(pageId) {
+    // Deactivate current
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+
+    // Activate new
+    const pageEl = document.getElementById("page-" + pageId);
+    if (!pageEl) return;
+    pageEl.classList.add("active");
+
+    const navEl = document.querySelector(`[data-page="${pageId}"]`);
+    if (navEl) {
+      navEl.classList.add("active");
+      navEl.scrollIntoView({ block: "nearest" });
+    }
+
+    // Breadcrumb
+    const entry = PAGE_ORDER.find(p => p.id === pageId);
+    document.getElementById("bc-current").textContent = entry ? entry.label : pageId;
+
+    // Prev / Next
+    const idx = PAGE_ORDER.findIndex(p => p.id === pageId);
+    const btnPrev = document.getElementById("btn-prev");
+    const btnNext = document.getElementById("btn-next");
+    const spacerPrev = document.getElementById("spacer-prev");
+
+    if (idx > 0) {
+      const prev = PAGE_ORDER[idx - 1];
+      btnPrev.style.display = "flex";
+      document.getElementById("prev-title").textContent = prev.label;
+      btnPrev.onclick = () => navigateTo(prev.id);
+      spacerPrev.style.display = "none";
+    } else {
+      btnPrev.style.display = "none";
+      spacerPrev.style.display = "block";
+    }
+
+    if (idx < PAGE_ORDER.length - 1) {
+      const next = PAGE_ORDER[idx + 1];
+      btnNext.style.display = "flex";
+      document.getElementById("next-title").textContent = next.label;
+      btnNext.onclick = () => navigateTo(next.id);
+    } else {
+      btnNext.style.display = "none";
+    }
+
+    currentPage = pageId;
+    window.scrollTo({ top: 0 });
+
+    // Update hash without reload
+    history.replaceState(null, "", "#" + pageId);
+
+    // Close mobile sidebar
+    closeSidebar();
+  }
+
+  // Wire up sidebar nav items
+  document.querySelectorAll(".nav-item[data-page]").forEach(el => {
+    el.addEventListener("click", () => navigateTo(el.getAttribute("data-page")));
+  });
+
+  // Mobile sidebar
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("open");
+    document.getElementById("sidebar-overlay").classList.toggle("open");
+  }
+  function closeSidebar() {
+    document.getElementById("sidebar").classList.remove("open");
+    document.getElementById("sidebar-overlay").classList.remove("open");
+  }
+
+  // Load page from hash on start
+  const hash = window.location.hash.slice(1);
+  if (hash && document.getElementById("page-" + hash)) {
+    navigateTo(hash);
+  } else {
+    navigateTo("introduction");
+  }
+</script>
+</body>
+</html>
