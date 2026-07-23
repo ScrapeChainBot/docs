@@ -1441,43 +1441,142 @@ TRADING BOT — LICENSE ACTIVATION
     <!-- PAGE: add-filter -->
     <div class="page" id="page-add-filter">
       <h1>Add Filter</h1>
-      <p class="page-subtitle">A single-condition dynamic filter using a bracket template from a real channel message.</p>
+      <p class="page-subtitle">A single-condition dynamic filter that reads a real message from your channel and checks one number or word before trading.</p>
 
-      <h2>The Bracket Format</h2>
-      <p>Copy a real sample message from your channel. Then wrap two things in square brackets:</p>
-      <ol>
-        <li>The <strong>label</strong> — the keyword or phrase that appears before the value you care about</li>
-        <li>The <strong>value</strong> — the actual number or word you want to set a rule on</li>
-      </ol>
+      <p>This is a brand new type of filter — nothing else works like this. Instead of blocking keywords or requiring an exact static phrase, Add Filter reads a structured message, finds a specific value inside it, and checks whether that value meets your rule. If yes, the trade proceeds. If no, it's blocked.</p>
 
-      <h2>Numeric Conditions</h2>
-      <p>For filtering on a number in the message (buy volume, market cap, etc.):</p>
-      <pre>/dynamic [Label:] [Number]</pre>
+      <div class="callout">
+        <strong>When to use Add Filter vs Multi-Filter</strong><br>
+        Use <strong>Add Filter</strong> when you have one condition to check (e.g. token age under 3 minutes, <em>or</em> rating is "High"). Use <strong>Multi-Filter</strong> when you need multiple conditions to all be true at once. A single Add Filter is simpler to set up and easier to debug.
+      </div>
 
-      <p><strong>Example</strong> — your channel sends messages like:</p>
-      <pre>Last 3 mins buy: 122 SOL
-Rating: High
-in 95 buys</pre>
+      <h2>The three things you always provide</h2>
+      <p>Every filter is built from three pieces. Understanding them is the key to getting this right.</p>
 
-      <p>To filter on the SOL volume, send:</p>
-      <pre>/dynamic Last 3 mins buy: 122 SOL [SOL] [122]</pre>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Piece</th><th>What it is</th><th>How to pick it</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Context</strong></td>
+              <td>A line (or partial line) copied from a real post. Gives the bot the surrounding text to look at.</td>
+              <td>Copy the smallest slice of the post that contains your value — but nothing else that could vary.</td>
+            </tr>
+            <tr>
+              <td><strong>Anchor</strong></td>
+              <td>The fixed text sitting directly next to your value. Acts as a location guide — the bot finds the anchor, then reads what's right next to it.</td>
+              <td>Must never change between posts. Must be immediately before or after the value. Spaces, emojis, and hyphens all count.</td>
+            </tr>
+            <tr>
+              <td><strong>Value</strong></td>
+              <td>The actual number or word you want to check (e.g. <code>3</code> for token age, <code>early</code> for a signal label).</td>
+              <td>This is what changes post to post. Everything else in your template should be fixed.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <p>The bot will ask you to set a rule — for example, "greater than 50" means the trade only happens if the SOL value found in the message is above 50.</p>
+      <h2>Choosing a good context</h2>
+      <p>This is the most important step. Your context must contain the value you want to filter — but <strong>only that value should be able to change</strong>. Any other number or word that varies between posts will confuse the bot.</p>
 
-      <h2>Text / Keyword Conditions</h2>
-      <p>For filtering on a word or rating in the message:</p>
-      <pre>/dynamic [Label:] [Word]</pre>
-
-      <p><strong>Example</strong> — to filter only for "High" ratings:</p>
-      <pre>/dynamic Rating: High [Rating:] [High]</pre>
-
-      <p>The bot creates a filter that checks the word after "Rating:" and only allows the trade if it matches "High" (case-insensitive).</p>
-
-      <h2>How the bot reads your template</h2>
-      <p>The bot uses the first bracket as the label to search for in the message. Once it finds that label, it extracts whatever value appears immediately after it (the position defined by your second bracket). For numeric filters it compares the extracted number against your rule. For text filters it checks whether the extracted word matches your allowed values.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Context</th><th>Result</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>MC $23.2K | ⌛ 3m</code></td>
+              <td>❌ Bad</td>
+              <td>Two values change: the market cap (<code>23.2K</code>) and the age (<code>3</code>). The bot can't anchor cleanly to either.</td>
+            </tr>
+            <tr>
+              <td><code>| ⌛ 3m</code></td>
+              <td>✅ Good</td>
+              <td>Only the age number changes. The <code>| ⌛</code> part and the trailing <code>m</code> are always there — perfect anchor material.</td>
+            </tr>
+            <tr>
+              <td><code>| ⌛ 3</code></td>
+              <td>❌ Bad</td>
+              <td>Missing the unit <code>m</code> means the bot could match <code>3h</code> (3 hours) in another format and you'd buy a token that's hours old.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <div class="callout warning">
-        If the label cannot be found in a message, the filter fails and the trade is blocked.
+        <strong>The only thing that should change in your context is the value you're filtering.</strong> Anchor text, punctuation, emojis, units — all of it must stay fixed between every post the channel sends.
+      </div>
+
+      <h2>The command format</h2>
+      <p>Tap <strong>Add Filter</strong>, then send the <code>/dynamic</code> command. Your context goes first, then you wrap the anchor in <code>[ ]</code> and the value in <code>[ ]</code>:</p>
+
+      <pre>/dynamic &lt;context&gt; [anchor] [value]</pre>
+
+      <p>The bot will read what comes after the anchor, extract the value, and apply your rule to it.</p>
+
+      <hr>
+
+      <h2>Example 1 — Numeric filter (token age)</h2>
+      <p><strong>Goal:</strong> Only buy tokens that are under 3 minutes old.</p>
+      <p>Your channel posts messages that include a line like:</p>
+      <pre>| ⌛ 3m</pre>
+      <p>The age number (<code>3</code>) changes. Everything else — the pipe, the hourglass, the space, the <code>m</code> — stays fixed.</p>
+      <p>Step 1 — pick your context. Use the shortest slice that contains only the age:</p>
+      <pre>| ⌛ 3m</pre>
+      <p>Step 2 — identify the anchor. The anchor is the hourglass emoji plus the space right before the number. Include the space:</p>
+      <pre>⌛ </pre>
+      <p>Step 3 — the value is the number itself:</p>
+      <pre>3</pre>
+      <p>Your command:</p>
+      <pre>/dynamic | ⌛ 3m [⌛ ][3]</pre>
+
+      <div class="callout">
+        <strong>Note on the space inside the brackets</strong><br>
+        <code>[⌛ ]</code> includes a trailing space. That space is part of the format in the post — the bot needs it to locate the number precisely. Copy exactly as it appears.
+      </div>
+
+      <p>The bot will confirm "numeric filter mapped" and ask for your rule. For token age under 3 minutes, enter:</p>
+      <pre>&lt; 4</pre>
+      <p>Why <code>&lt; 4</code> and not <code>&lt; 3</code>? Because <code>&lt; 3</code> means "below 3" — it would miss tokens that are exactly 3 minutes old. <code>&lt; 4</code> catches 1m, 2m, and 3m.</p>
+
+      <hr>
+
+      <h2>Example 2 — Numeric filter (time since open)</h2>
+      <p><strong>Goal:</strong> Only buy tokens that have been trading for under 5 minutes.</p>
+      <p>Your channel posts a line like:</p>
+      <pre>5 MIN after open</pre>
+      <p>You might think <code>after</code> is the anchor — it's right next to the number. But look carefully: sometimes the format uses <code>&lt; 5 MIN</code> (with a less-than sign before the number), so <code>after</code> isn't always directly beside the value. <code>MIN</code>, however, is always there and always in the same position.</p>
+      <p>Use <code>MIN</code> as the anchor instead:</p>
+      <pre>/dynamic 5 MIN [MIN] [5]</pre>
+      <p>Rule:</p>
+      <pre>&lt; 5.1</pre>
+      <p>Using <code>5.1</code> instead of <code>5</code> ensures that a value of exactly <code>5</code> still passes (since <code>5 &lt; 5.1</code> is true). With this rule the bot buys when it sees 1 MIN, 2 MIN, 3 MIN, 4 MIN, or 5 MIN.</p>
+
+      <div class="callout warning">
+        <strong>Anchor placement matters more than it looks.</strong> If anything in the post format can shift the anchor away from the value — a symbol, a sign, an extra word — pick a different anchor that stays reliably adjacent.
+      </div>
+
+      <hr>
+
+      <h2>Example 3 — Text filter (keyword)</h2>
+      <p><strong>Goal:</strong> Only buy when a post says the token was "promoted very early."</p>
+      <p>Your channel posts a line like:</p>
+      <pre>the first community call initiated (promoted very early)</pre>
+      <p>The word that changes is <code>early</code> (it could be <code>late</code>, <code>fast</code>, etc.). The word right before it — <code>very</code> — never changes in this position.</p>
+      <p>Anchor: <code>very </code> (include the trailing space)<br>Value: <code>early</code></p>
+      <pre>/dynamic the first community call initiated (promoted very early) [very ][early]</pre>
+      <p>For the rule, type the word you want to allow:</p>
+      <pre>early</pre>
+
+      <h3>Allowing multiple variations</h3>
+      <p>If the post could say "promoted very early", "promoted very late", or "promoted very fast" and you want to buy all three, separate the allowed words with commas in your rule:</p>
+      <pre>early, late, fast</pre>
+      <p>If instead the variations change more than one word — for example "promoted very early", "really late", or "quite late" — then move your anchor further back to a word that stays fixed across all of them, like <code>promoted</code>:</p>
+      <pre>/dynamic the first community call initiated (promoted very early) [promoted ][very early]</pre>
+      <p>Rule:</p>
+      <pre>very early, really late, quite late</pre>
+
+      <div class="callout">
+        <strong>Text rules are checked against the extracted value exactly.</strong> The rule <code>early</code> matches a post where the value is <code>early</code>. Separate multiple allowed values with commas. The check is case-insensitive.
       </div>
     </div>
 
@@ -1485,34 +1584,134 @@ in 95 buys</pre>
     <!-- PAGE: multi-filter -->
     <div class="page" id="page-multi-filter">
       <h1>Multi-Filter (AND Logic)</h1>
-      <p class="page-subtitle">A group filter where all conditions must be true in the same message for the trade to proceed.</p>
+      <p class="page-subtitle">A group filter where every condition must be true in the same message before the bot trades. One failure blocks the whole group.</p>
 
-      <p>If even one condition in the group fails, the entire group fails. This is different from adding multiple single filters (which use OR logic between them).</p>
-
-      <h2>How to set it up</h2>
-      <p>Tap <strong>Add Multi-Filter (AND)</strong> then send the <code>/multidynamic</code> command followed by multiple template lines, one per line:</p>
-
-      <pre>/multidynamic
-Last 3 mins buy: 122 SOL [SOL] [122]
-Rating: High [Rating:] [High]
-in 95 buys [buys] [95]</pre>
-
-      <p>This creates a single filter group that requires all three conditions to be satisfied:</p>
-      <ul>
-        <li>The SOL buy volume must be present and pass your numeric rule</li>
-        <li>"Rating:" must be followed by "High"</li>
-        <li>The buys count must be present and pass your numeric rule</li>
-      </ul>
-
-      <h2>Combining single and multi-filters</h2>
-      <p>You can have a mix of single filters and multi-filter groups active at the same time. The overall result is:</p>
+      <p>Add Filter checks one thing. Multi-Filter checks multiple things at once — and all of them must pass. If a post meets 2 out of 3 conditions, the trade is still blocked. This is how you make the bot precise: not just "this channel posted something," but "this channel posted exactly the kind of signal I'm looking for."</p>
 
       <div class="callout">
-        <strong>If any filter or group passes → trade proceeds.</strong>
-        <br>This gives you flexible OR logic at the top level with AND logic inside each multi-filter group.
+        <strong>Same building blocks, multiple lines</strong><br>
+        Each condition in a Multi-Filter is built exactly the same way as an Add Filter — context, anchor in <code>[ ]</code>, value in <code>[ ]</code>. The only difference is that you send all conditions together in one command, and the rules are set one per line.
       </div>
 
-      <p><strong>Example:</strong> If you add a single SOL volume filter AND a multi-filter group, the trade proceeds if either the single filter passes OR the entire group passes. You can use this to define a "basic" condition and a "full signal" condition simultaneously.</p>
+      <h2>The command format</h2>
+      <p>Tap <strong>Add Multi-Filter (AND)</strong>, then send <code>/multidynamic</code> followed by one filter line per condition. Each line is the same bracket format from Add Filter:</p>
+
+      <pre>/multidynamic
+&lt;context line 1&gt; [anchor1] [value1]
+&lt;context line 2&gt; [anchor2] [value2]
+&lt;context line 3&gt; [anchor3] [value3]</pre>
+
+      <p>The bot will then ask for your rules — one rule per line, in the same order as your conditions.</p>
+
+      <hr>
+
+      <h2>Full example — 3 conditions, one trade</h2>
+      <p><strong>Goal:</strong> Only buy when a post shows all three of the following at once:</p>
+      <ul>
+        <li>It is the <strong>first call</strong> on this token (calls count = 1)</li>
+        <li>Market cap is <strong>under $50K</strong></li>
+        <li>The token was <strong>promoted very early</strong></li>
+      </ul>
+
+      <p>Your channel posts messages that contain lines like these:</p>
+      <pre>CALLS - 1
+Market Cap: $82K
+the first community call initiated (promoted very early)</pre>
+
+      <p>You need three filter lines — one for each condition. Build each one the same way you would for Add Filter:</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>What to filter</th><th>Context</th><th>Anchor</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>First call only</td>
+              <td><code>CALLS - 1</code></td>
+              <td><code>CALLS - </code></td>
+              <td><code>1</code></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Market cap number</td>
+              <td><code>Market Cap: $82</code></td>
+              <td><code>Market Cap: $</code></td>
+              <td><code>82</code></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td>Promotion label</td>
+              <td><code>the first community call initiated (promoted very early)</code></td>
+              <td><code>very </code></td>
+              <td><code>early</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Your full command:</p>
+      <pre>/multidynamic
+CALLS - 1 [CALLS - ][1]
+Market Cap: $82 [Market Cap: $][82]
+the first community call initiated (promoted very early) [very ][early]</pre>
+
+      <div class="callout warning">
+        <strong>Why does the market cap context stop at the number, not include "K"?</strong><br>
+        Sometimes market caps are in the millions — the format changes. Stopping before the unit (<code>K</code>, <code>M</code>) keeps the context reliable no matter how large the value is. The anchor <code>Market Cap: $</code> is always there; the unit is not.
+      </div>
+
+      <h2>Setting the rules</h2>
+      <p>After sending the command the bot confirms each filter and asks for your rules. Enter one rule per line in the same order as your conditions:</p>
+
+      <pre>&lt; 2
+&lt; 51
+early</pre>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Line</th><th>Rule</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><code>&lt; 2</code></td>
+              <td>Calls count must be below 2 — meaning only 1 call exists (the first).</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><code>&lt; 51</code></td>
+              <td>Market cap number must be below 51. Since the number in the post is in thousands (e.g. <code>82</code> = $82K), this catches anything under $51K.</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><code>early</code></td>
+              <td>The text extracted after the anchor must match "early".</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>A post must satisfy all three to trigger a trade. Two out of three is not enough.</p>
+
+      <hr>
+
+      <h2>Combining single and multi-filters</h2>
+      <p>You can run single filters and multi-filter groups at the same time. The overall logic is:</p>
+
+      <div class="callout">
+        <strong>OR at the top level — AND inside each group.</strong><br>
+        If <em>any</em> single filter passes, the trade proceeds. If <em>any</em> multi-filter group has all its conditions met, the trade proceeds. A group where even one condition fails does not count.
+      </div>
+
+      <p>This lets you define a simple fallback and a stricter full-signal condition at the same time. For example:</p>
+      <ul>
+        <li><strong>Single filter:</strong> SOL volume &gt; 80 (basic momentum check)</li>
+        <li><strong>Multi-filter group:</strong> first call AND under $50K market cap AND promoted early (full signal)</li>
+      </ul>
+      <p>The bot trades if either condition set is satisfied — the basic check alone is enough, and so is the full signal alone. They don't need to both be true.</p>
+
+      <div class="callout warning">
+        <strong>Watch for contradictions.</strong> If you have multiple active filters, make sure they don't conflict with each other. For example, a single filter requiring "Rating: High" and a multi-filter requiring "Rating: Low" would cancel each other out on any given post. It is fine to run multiple filters as long as you understand that any one passing is enough to trigger a trade.
+      </div>
     </div>
 
 
