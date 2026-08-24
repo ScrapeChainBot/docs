@@ -333,7 +333,6 @@
       <a data-page="setup">Get Your License</a>
       <a data-page="setup-keys" class="sub">Gather Your Keys</a>
       <a data-page="setup-wallet" class="sub">GMGN Wallet Setup</a>
-      <a data-page="setup-server" class="sub">WispByte Server Setup</a>
       <a data-page="setup-activation" class="sub">Bot Activation</a>
       <a data-page="setup-gmgn-api" class="sub">GMGN API Key</a>
       <a data-page="setup-chains" class="sub">Solana &amp; Robinhood Keys</a>
@@ -346,9 +345,6 @@
   <div class="nav-group" data-group="corrections">
     <div class="nav-group-header">Corrections &amp; Troubleshooting <span class="arrow">▶</span></div>
     <div class="nav-group-links">
-      <a data-page="fix-during" class="sub">Mistake During Setup</a>
-      <a data-page="fix-after" class="sub">Mistake After Setup</a>
-      <a data-page="fix-manual" class="sub">Editing config.local</a>
       <a data-page="err-no-wallet" class="sub">No Wallet Configured</a>
       <a data-page="err-op-forbidden" class="sub">Operation Forbidden</a>
       <a data-page="err-signature" class="sub">Signature Invalid (401)</a>
@@ -457,6 +453,11 @@
     Access the bot at <a href="https://t.me/ScrapeChainBot" target="_blank">https://t.me/ScrapeChainBot</a>
   </div>
 
+  <div class="callout success">
+    <div class="callout-title">🌐 Website Link</div>
+    Set up your bot at <a href="https://scrapechainbot.xyz" target="_blank">https://scrapechainbot.xyz</a>
+  </div>
+
   <h2>Documentation Structure</h2>
   <p>This documentation is organized progressively — start with the Setup Guide to get running, then move through Global Settings and channel configuration as you become more familiar with the bot.</p>
   <ul>
@@ -483,32 +484,55 @@
 
   <div class="callout info">
     <div class="callout-title">📋 What You Will Need</div>
-    A Telegram account &bull; A GMGN account (via the referral link below) &bull; A GitHub account &bull; A crypto wallet (Phantom or any Solana wallet) &bull; A WispByte account (free cloud hosting)
-  </div>
-
-  <div class="callout warn">
-    <div class="callout-title">⚠️ Keep This Guide Open Alongside the Console</div>
-    The console does <strong>not label</strong> what it is asking for — it just waits for input. This guide tells you exactly what to type and in what order. Every input is submitted by clicking <strong>Send</strong>. Pressing keyboard Enter alone does nothing.
+    A Telegram account &bull; A GMGN account (via the referral link below) &bull; A crypto wallet (Phantom or any Solana wallet)
   </div>
 
   <h2>Get Your License</h2>
   <div class="step">
     <div class="step-num">1</div>
     <div class="step-body">
-      <strong>Create a GitHub account</strong> at <a href="https://github.com" target="_blank">github.com</a>. After signing up, go to your profile — the URL will look like <code>github.com/yourname</code>. Copy only <code>yourname</code> (not the full URL).
+      <strong>Sign up for GMGN</strong> using this referral link: <a href="https://gmgn.ai/r/TGScraper" target="_blank">gmgn.ai/r/TGScraper</a>. You <em>must</em> use this link — the license system checks for it. Do not go to gmgn.ai directly. Afterwards, copy the <strong>last 4 digits of your GMGN UID</strong>.
     </div>
   </div>
   <div class="step">
     <div class="step-num">2</div>
     <div class="step-body">
-      <strong>Sign up for GMGN</strong> using this referral link: <a href="https://gmgn.ai/r/TGScraper" target="_blank">gmgn.ai/r/TGScraper</a>. You <em>must</em> use this link — the license system checks for it. Do not go to gmgn.ai directly.
+      <strong>Create your bot with <a href="https://t.me/BotFather" target="_blank">@BotFather</a></strong> on Telegram. Send <code>/newbot</code>, follow the prompts, and copy the token it gives you — it looks like <code>123456789:AAF...</code>
     </div>
   </div>
   <div class="step">
     <div class="step-num">3</div>
     <div class="step-body">
-      <strong>Message the bot</strong> at <a href="https://t.me/scrapechainbot" target="_blank">@scrapechainbot</a> using <code>/admin</code> and send your GitHub username. You will receive your license key in reply within a few minutes.
+      <strong>Open <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> and press Start.</strong> It replies with a setup phrase you will need on the form. This chat is also where your license key and your "bot is live" message arrive.
     </div>
+  </div>
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Create your account</strong> at <a href="https://scrapechainbot.xyz" target="_blank">scrapechainbot.xyz</a>, then choose a plan — <strong>Free</strong> or <strong>Pro ($5 / 30 days)</strong>. Pro is paid with Solana Pay at checkout.
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <strong>Fill in the setup form.</strong> Select <em>I need a license (first time)</em>, then enter your setup phrase, Telegram user ID, bot token, and the last 4 digits of your GMGN UID. Submit.
+    </div>
+  </div>
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <strong>Wait for your confirmation.</strong> Requests are processed between <strong>8:00 AM and 10:00 PM UTC</strong> and your bot goes live within <strong>1 hour</strong>. Submit outside those hours and it is picked up at 8:00 AM UTC. <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> messages you the moment it is live, with your license key.
+    </div>
+  </div>
+
+  <div class="callout success">
+    <div class="callout-title">✅ Keep Your License Key</div>
+    Save the license key you receive. Next time you set up a bot, choose <em>I already have a license key</em> on the form and enter it instead of requesting a new one.
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">ℹ️ Nothing to Install</div>
+    Your bot is prepared and switched on for you — there is no console, terminal, or config file to touch. The rest of this guide covers the keys you enter inside the bot on Telegram and how to configure trading.
   </div>
 
   <div class="page-nav">
@@ -546,13 +570,6 @@
 
   <h2>Your Telegram User ID</h2>
   <p>Start a chat with <a href="https://t.me/userinfobot" target="_blank">@userinfobot</a> on Telegram. It will reply with your numeric user ID.</p>
-
-  <h2>GitHub Personal Access Token (PAT)</h2>
-  <ol>
-    <li>Go to <a href="https://github.com/settings/tokens" target="_blank">GitHub → Settings → Tokens (classic)</a></li>
-    <li>Generate a new classic token. Give it <strong>repo</strong> access scope.</li>
-    <li>Copy the token — you won't see it again after leaving the page.</li>
-  </ol>
 
   <h2>GMGN Wallet Private Key</h2>
   <ol>
@@ -626,59 +643,6 @@
 
   <div class="page-nav">
     <span class="page-nav-btn" data-page="setup-keys"><span class="arrow">←</span> Gather Your Keys</span>
-    <span class="page-nav-btn" data-page="setup-server">WispByte Server Setup <span class="arrow">→</span></span>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════════
-     SETUP — SERVER
-══════════════════════════════════════════════════ -->
-<div class="page" id="setup-server">
-  <h1 class="page-title">WispByte Server Setup</h1>
-  <p class="page-subtitle">The bot runs on a cloud server. This guide uses WispByte, a hosting provider with a free tier and simple configuration.</p>
-
-  <h2>Create a WispByte Server</h2>
-  <ol>
-    <li>Go to <a href="https://wispbyte.com/client" target="_blank">wispbyte.com/client</a> and sign up.</li>
-    <li>Scroll down and click <strong>Create Server</strong>.</li>
-    <li>Choose a name for your server.</li>
-    <li>Choose a plan. The free plan works but requires reactivation every other week. The paid 1 GB RAM plan (~$13/month) is recommended for reliability.</li>
-    <li>Choose <strong>Python</strong> as the technology, then click Create.</li>
-  </ol>
-
-  <h2>Configure the Startup Settings</h2>
-  <ol>
-    <li>Click <strong>Manage Server</strong> on your new server.</li>
-    <li>Under <strong>Configuration</strong>, go to <strong>Startup</strong> and fill in the following:</li>
-  </ol>
-
-  <table>
-    <thead><tr><th>Field</th><th>Value</th></tr></thead>
-    <tbody>
-      <tr><td>Git Repo Address</td><td><code>https://github.com/CopyTradersHub/GmGn-Bot-Telegram-Autobuy-Scraper</code></td></tr>
-      <tr><td>Git Branch</td><td><code>main</code></td></tr>
-      <tr><td>Auto Update</td><td><code>1</code></td></tr>
-      <tr><td>Git Username</td><td>Your GitHub username</td></tr>
-      <tr><td>Git Access Token</td><td>The PAT token you generated</td></tr>
-    </tbody>
-  </table>
-
-  <h2>Clone the Repository</h2>
-  <ol>
-    <li>Under <strong>General</strong>, go to <strong>GitHub</strong> and toggle on <strong>Auto Update on Startup</strong>.</li>
-    <li>Click <strong>Clone</strong>. On the free plan, if an ad appears, close the reward and click Clone again.</li>
-    <li>Wait until the clone is complete, then close.</li>
-    <li>Verify it worked: under <strong>Server Management → Files</strong> you should see new files from the repository.</li>
-  </ol>
-
-  <div class="trouble-link">
-    ℹ️ Made an error entering credentials?
-    <span data-page="fix-during" style="color:#7a9cd8;cursor:pointer">→ How to fix mistakes during setup</span>
-  </div>
-
-  <div class="page-nav">
-    <span class="page-nav-btn" data-page="setup-wallet"><span class="arrow">←</span> GMGN Wallet Setup</span>
     <span class="page-nav-btn" data-page="setup-activation">Bot Activation <span class="arrow">→</span></span>
   </div>
 </div>
@@ -689,54 +653,55 @@
 ══════════════════════════════════════════════════ -->
 <div class="page" id="setup-activation">
   <h1 class="page-title">Bot Activation</h1>
-  <p class="page-subtitle">Once the server is running, you'll be prompted to enter your credentials in order through the console.</p>
+  <p class="page-subtitle">Your bot is switched on for you. When you open it on Telegram it walks you through the remaining keys, one prompt at a time.</p>
+
+  <div class="callout warn">
+    <div class="callout-title">⚠️ Made a Mistake? You Do Not Have to Start Over Alone</div>
+    <strong>If you enter something wrong during this setup, contact the admin at <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> and ask for a refresh.</strong> Your bot is reset from our end and you can run through the prompts again from the beginning. Do not try to fix it yourself — there are no files for you to edit.
+  </div>
 
   <h2>Start the Bot</h2>
   <ol>
-    <li>Under <strong>Server Management → Console</strong>, the bot may already be running or may have crashed on first boot.</li>
-    <li>Click <strong>Start</strong> to launch it.</li>
-    <li>Wait for the startup sequence. You'll see the license screen:<br><br>
-      <pre>============================================================
-TRADING BOT — LICENSE ACTIVATION
-============================================================</pre>
-    </li>
+    <li>Open your own bot on Telegram — the one you created with <a href="https://t.me/BotFather" target="_blank">@BotFather</a>.</li>
+    <li>Press <strong>Start</strong> or send <code>/start</code>.</li>
+    <li>The bot begins its setup sequence and prompts you for the first value.</li>
   </ol>
 
   <h2>Enter Your Keys</h2>
-  <p>The bot will prompt you for each key in this order. Enter each value and click Send:</p>
+  <p>The bot will prompt you for each key in this order. Send each value as a normal Telegram message:</p>
 
   <table>
     <thead><tr><th>#</th><th>Prompt</th><th>What to enter</th></tr></thead>
     <tbody>
-      <tr><td>1</td><td>User ID</td><td>Your Telegram numeric user ID</td></tr>
-      <tr><td>2</td><td>License key</td><td>The license key received from admin. Wait for "Validating… OK"</td></tr>
-      <tr><td>3</td><td>BOT_TOKEN</td><td>Your BotFather API token</td></tr>
-      <tr><td>4</td><td>API_ID</td><td>From my.telegram.org</td></tr>
-      <tr><td>5</td><td>API_HASH</td><td>From my.telegram.org</td></tr>
-      <tr><td>6</td><td>USER_ID</td><td>Your Telegram numeric user ID</td></tr>
-      <tr><td>7</td><td>PHONE NUMBER</td><td>Your Telegram phone number with country code</td></tr>
-      <tr><td>8</td><td>2FA?</td><td>Type <code>Yes</code> if your Telegram account has 2-factor authentication, otherwise <code>No</code></td></tr>
-      <tr><td>8b</td><td>2FA pin</td><td>If you typed Yes above, enter your 2FA PIN</td></tr>
-      <tr><td>9</td><td>GMGN link</td><td>Copy the GMGN link from the bot. It opens a page where you enable trading (requires Google Authenticator 2FA). Copy the generated key and paste it.</td></tr>
-      <tr><td>10</td><td>(confirmation)</td><td>Type anything and click Send, then do it again.</td></tr>
-      <tr><td>11</td><td>GMGN API key</td><td>Paste the key generated in step 9</td></tr>
-      <tr><td>12</td><td>Solana private key</td><td>The private key from your GMGN SOL wallet</td></tr>
-      <tr><td>13</td><td>Helius API key</td><td>Your Helius developer API key</td></tr>
-      <tr><td>14</td><td>Robinhood?</td><td>Type <code>No</code> to skip EVM, or <code>Yes</code> to continue</td></tr>
-      <tr><td>14b</td><td>EVM private key</td><td>If Yes, paste your EVM wallet private key</td></tr>
-      <tr><td>14c</td><td>QuickNode URL</td><td>If Yes, paste your QuickNode Robinhood endpoint URL</td></tr>
-      <tr><td>15</td><td>Confirm</td><td>Type <code>Yes</code></td></tr>
-      <tr><td>16</td><td>Telegram code</td><td>A code will be sent to your Telegram — paste it and send. You're now logged in.</td></tr>
+      <tr><td>1</td><td>API_ID</td><td>From my.telegram.org</td></tr>
+      <tr><td>2</td><td>API_HASH</td><td>From my.telegram.org</td></tr>
+      <tr><td>3</td><td>PHONE NUMBER</td><td>Your Telegram phone number with country code</td></tr>
+      <tr><td>4</td><td>2FA?</td><td>Type <code>Yes</code> if your Telegram account has 2-factor authentication, otherwise <code>No</code></td></tr>
+      <tr><td>4b</td><td>2FA pin</td><td>If you typed Yes above, enter your 2FA PIN</td></tr>
+      <tr><td>5</td><td>GMGN link</td><td>Open the GMGN link the bot sends. It creates your API key and enables trading (requires Google Authenticator 2FA).</td></tr>
+      <tr><td>6</td><td>GMGN API key</td><td>Paste the key generated by the link in step 5</td></tr>
+      <tr><td>7</td><td>Solana private key</td><td>The private key from your GMGN SOL wallet</td></tr>
+      <tr><td>8</td><td>Helius API key</td><td>Your Helius developer API key</td></tr>
+      <tr><td>9</td><td>Robinhood?</td><td>Type <code>No</code> to skip EVM, or <code>Yes</code> to continue</td></tr>
+      <tr><td>9b</td><td>EVM private key</td><td>If Yes, paste your EVM wallet private key</td></tr>
+      <tr><td>9c</td><td>QuickNode URL</td><td>If Yes, paste your QuickNode Robinhood endpoint URL</td></tr>
+      <tr><td>10</td><td>Confirm</td><td>Type <code>Yes</code></td></tr>
+      <tr><td>11</td><td>Telegram code</td><td>A code is sent to your Telegram — paste it and send. You're now logged in.</td></tr>
     </tbody>
   </table>
 
+  <div class="callout info">
+    <div class="callout-title">ℹ️ Your License and Bot Token Are Already Set</div>
+    You entered those on the website form, so the bot does not ask for them again. Setup starts straight at your Telegram API credentials.
+  </div>
+
   <div class="callout success">
     <div class="callout-title">✅ Setup complete!</div>
-    Once logged in, open your bot in Telegram. Before making your first trade, set a buy amount for each channel you add. You can also configure Stop Loss, Take Profit, and other parameters.
+    Before making your first trade, set a buy amount for each channel you add. You can also configure Stop Loss, Take Profit, and other parameters.
   </div>
 
   <div class="page-nav">
-    <span class="page-nav-btn" data-page="setup-server"><span class="arrow">←</span> WispByte Server Setup</span>
+    <span class="page-nav-btn" data-page="setup-wallet"><span class="arrow">←</span> GMGN Wallet Setup</span>
     <span class="page-nav-btn" data-page="setup-gmgn-api">GMGN API Key <span class="arrow">→</span></span>
   </div>
 </div>
@@ -747,7 +712,7 @@ TRADING BOT — LICENSE ACTIVATION
 ══════════════════════════════════════════════════ -->
 <div class="page" id="setup-gmgn-api">
   <h1 class="page-title">GMGN API Key</h1>
-  <p class="page-subtitle">After confirming your credentials, the bot generates a special link. This link creates your API key on GMGN and simultaneously creates a matching <code>gmgn_private.pem</code> file on your server. These two are always generated as a matched pair.</p>
+  <p class="page-subtitle">After confirming your credentials, the bot generates a special link. This link creates your API key on GMGN and simultaneously creates a matching signing key for your bot. These two are always generated as a matched pair.</p>
 
   <div class="step">
     <div class="step-num">1</div>
@@ -773,7 +738,7 @@ TRADING BOT — LICENSE ACTIVATION
 
   <div class="callout warn">
     <div class="callout-title">⚠️ One API Key Per Setup — Old Keys Don't Work</div>
-    Every fresh setup (after deleting config files) generates a new link and a new API key. If you paste an API key from a previous setup run, it won't match the new PEM file and will fail. Always use the key from the most recent link.
+    Every fresh setup (after a bot refresh) generates a new link and a new API key. If you paste an API key from a previous setup run, it won't match and will fail. Always use the key from the most recent link.
   </div>
 
   <div class="callout warn">
@@ -818,11 +783,6 @@ TRADING BOT — LICENSE ACTIVATION
     </tbody>
   </table>
 
-  <div class="trouble-link">
-    ℹ️ Need to change something after saving?
-    <span data-page="fix-after" style="color:#7a9cd8;cursor:pointer">→ How to fix mistakes after setup</span>
-  </div>
-
   <div class="page-nav">
     <span class="page-nav-btn" data-page="setup-gmgn-api"><span class="arrow">←</span> GMGN API Key</span>
     <span class="page-nav-btn" data-page="setup-verify">Telegram Verification <span class="arrow">→</span></span>
@@ -843,13 +803,7 @@ TRADING BOT — LICENSE ACTIVATION
     <div class="callout-title">✅ Setup Complete — What to Look For</div>
     When everything worked you will see:<br><br>
     <code>✅ Authentication successful!</code><br>
-    <code>✅ Bot started successfully</code><br><br>
-    If you see "Bot limited" instead, the code expired. Delete <code>config.local</code> and <code>.cache</code> from Files, then restart.
-  </div>
-
-  <div class="trouble-link">
-    ℹ️ Got to "Bot started" but something is wrong?
-    <span data-page="fix-after" style="color:#7a9cd8;cursor:pointer">→ How to fix mistakes after bot started</span>
+    <code>✅ Bot started successfully</code>
   </div>
 
   <div class="page-nav">
@@ -920,100 +874,7 @@ TRADING BOT — LICENSE ACTIVATION
 
   <div class="page-nav">
     <span class="page-nav-btn" data-page="setup-verify"><span class="arrow">←</span> Telegram Verification</span>
-    <span class="page-nav-btn" data-page="fix-during">Corrections &amp; Troubleshooting <span class="arrow">→</span></span>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════════
-     CORRECTIONS — DURING SETUP
-══════════════════════════════════════════════════ -->
-<div class="page" id="fix-during">
-  <h1 class="page-title">Mistake During Setup</h1>
-  <p class="page-subtitle">If you made an error and have not yet seen "Bot Started Successfully".</p>
-
-  <p>Click <strong>Stop</strong>, then <strong>Start</strong> in the WispByte console. The bot resets completely and prompts from the beginning. No files need to be deleted.</p>
-
-  <div class="callout info">
-    <div class="callout-title">ℹ️ This Applies Up To But Not Including "Bot Started Successfully"</div>
-    Once the bot prints that message, credentials have been saved and a simple restart is no longer enough. See <span data-page="fix-after" style="color:var(--accent);cursor:pointer">Mistake After Setup</span> for that case.
-  </div>
-
-  <div class="page-nav">
-    <span class="page-nav-btn" data-page="setup-after"><span class="arrow">←</span> After Setup</span>
-    <span class="page-nav-btn" data-page="fix-after">Mistake After Setup <span class="arrow">→</span></span>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════════
-     CORRECTIONS — AFTER SETUP
-══════════════════════════════════════════════════ -->
-<div class="page" id="fix-after">
-  <h1 class="page-title">Mistake After Setup</h1>
-  <p class="page-subtitle">Credentials are now saved in <code>config.local</code>. A simple restart won't reset them. You have two options.</p>
-
-  <h2>Option A — Full Reset (Most Reliable)</h2>
-  <p>Go to <strong>Files</strong> in WispByte. Delete all three of these:</p>
-  <pre>config.local
-.cache
-gmgn_private.pem</pre>
-  <p>Then click <strong>Stop → Start</strong> in Console. The bot runs setup again. You will <strong>not</strong> need to re-enter your license or re-verify your Telegram number.</p>
-
-  <div class="callout warn">
-    <div class="callout-title">⚠️ After Deleting — Restart Immediately</div>
-    Delete the files, then restart the bot right away. Do not leave it in a stopped state after deleting — some changes only take effect on a fresh start.
-  </div>
-
-  <h2>Option B — Edit a Single Value (Minor Fixes Only)</h2>
-  <p>Click on <code>config.local</code> in Files and change only the specific wrong value. Then follow this exact sequence:</p>
-  <ol>
-    <li>Edit <code>config.local</code></li>
-    <li>Delete the <code>.cache</code> file</li>
-    <li>Click Stop → Start in Console</li>
-  </ol>
-
-  <div class="callout error">
-    <div class="callout-title">🚫 Always Delete .cache After Any Manual Edit</div>
-    Every time you manually edit <code>config.local</code>, you must also delete the <code>.cache</code> file before restarting. If you skip this, the bot reads from its cache and ignores your change entirely.
-  </div>
-
-  <div class="page-nav">
-    <span class="page-nav-btn" data-page="fix-during"><span class="arrow">←</span> Mistake During Setup</span>
-    <span class="page-nav-btn" data-page="fix-manual">Editing config.local <span class="arrow">→</span></span>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════════
-     CORRECTIONS — MANUAL EDIT
-══════════════════════════════════════════════════ -->
-<div class="page" id="fix-manual">
-  <h1 class="page-title">Editing config.local</h1>
-  <p class="page-subtitle">The <code>config.local</code> file stores all your credentials. You can view and edit it directly in WispByte's Files section.</p>
-
-  <p>The file looks like this:</p>
-  <pre>BOT_TOKEN = 'your-bot-token-here'
-API_ID = '12345678'
-API_HASH = 'yourhashhere'
-GMGN_API_KEY = 'gmgn_your_key_here'
-GMGN_PRIVATE_KEY = 'your-solana-private-key'
-EVM_PRIVATE_KEY = 'your-evm-private-key'
-QUICKNODE_RPC_URL = 'https://xxx.robinhood.quiknode.pro/xxx/'</pre>
-
-  <p>To run as Robinhood-only (skip Solana entirely), blank the GMGN key:</p>
-  <pre>GMGN_API_KEY = ''</pre>
-
-  <p>Then delete <code>.cache</code> and restart. The bot detects the blank key and skips all Solana functionality.</p>
-
-  <div class="callout error">
-    <div class="callout-title">🚫 Always Delete .cache After Any Manual Edit</div>
-    Every time you manually edit <code>config.local</code>, you must also delete the <code>.cache</code> file before restarting. If you skip this, the bot reads from its cache and ignores your change.
-  </div>
-
-  <div class="page-nav">
-    <span class="page-nav-btn" data-page="fix-after"><span class="arrow">←</span> Mistake After Setup</span>
-    <span class="page-nav-btn" data-page="err-no-wallet">No Wallet Configured <span class="arrow">→</span></span>
+    <span class="page-nav-btn" data-page="err-no-wallet">Troubleshooting <span class="arrow">→</span></span>
   </div>
 </div>
 
@@ -1037,12 +898,12 @@ QUICKNODE_RPC_URL = 'https://xxx.robinhood.quiknode.pro/xxx/'</pre>
         <li>If the default wallet is ticked but your imported wallet is not, click to select your imported wallet instead.</li>
         <li>Go back to the bot — your correct SOL balance should now appear.</li>
       </ol>
-      <p>If balance shows correctly but the error still occurs, do a full reset: delete <code>config.local</code>, <code>.cache</code>, and <code>gmgn_private.pem</code>, then restart.</p>
+      <p>If the balance shows correctly but the error still occurs, contact the admin at <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> and ask for a bot refresh.</p>
     </div>
   </div>
 
   <div class="page-nav">
-    <span class="page-nav-btn" data-page="fix-manual"><span class="arrow">←</span> Editing config.local</span>
+    <span class="page-nav-btn" data-page="setup-after"><span class="arrow">←</span> After Setup</span>
     <span class="page-nav-btn" data-page="err-op-forbidden">Operation Forbidden <span class="arrow">→</span></span>
   </div>
 </div>
@@ -1076,15 +937,13 @@ QUICKNODE_RPC_URL = 'https://xxx.robinhood.quiknode.pro/xxx/'</pre>
       <p><strong>What it means:</strong> This happens when you:</p>
       <ul>
         <li>Pasted an old API key from a previous setup, or</li>
-        <li>Manually created a key on GMGN instead of using the bot's generated link, or</li>
-        <li>Edited the API key in <code>config.local</code> without regenerating the PEM</li>
+        <li>Manually created a key on GMGN instead of using the bot's generated link</li>
       </ul>
-      <p><strong>Fix — full reset:</strong></p>
+      <p><strong>Fix — request a fresh setup:</strong></p>
       <ol>
-        <li>Delete <code>config.local</code>, <code>.cache</code>, and <code>gmgn_private.pem</code> from Files.</li>
-        <li>Restart the bot — it runs setup again.</li>
-        <li>When it generates a new GMGN link, open it and use the <em>new</em> key it creates.</li>
-        <li>Do not use any saved API key from a previous session.</li>
+        <li>Contact the admin at <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> and ask for a bot refresh so a new matched API key and PEM pair can be generated.</li>
+        <li>Once your bot is refreshed, open it and use the <em>new</em> GMGN link it gives you — that link creates the matching key.</li>
+        <li>Paste the key from that new link. Do not reuse any API key from a previous session.</li>
       </ol>
     </div>
   </div>
@@ -1102,10 +961,9 @@ QUICKNODE_RPC_URL = 'https://xxx.robinhood.quiknode.pro/xxx/'</pre>
   <div class="error-card">
     <div class="error-card-header"><span class="label">Error</span><code>GMGN not configured — check API key and PEM key file</code></div>
     <div class="error-card-body">
-      <p><strong>What it means:</strong> Either <code>GMGN_API_KEY</code> is blank in <code>config.local</code>, or the <code>gmgn_private.pem</code> file is missing.</p>
+      <p><strong>What it means:</strong> Either <code>GMGN_API_KEY</code> is missing or blank.</p>
       <p><strong>This error does not appear for Robinhood trades</strong> — those use a completely separate path.</p>
-      <p><strong>Fix for Solana:</strong> Do a full reset to regenerate a matched API key + PEM pair.</p>
-      <p><strong>Fix for Robinhood-only:</strong> In <code>config.local</code>, set <code>GMGN_API_KEY = ''</code>, delete <code>.cache</code>, and restart. See <span data-page="concepts-robinhood-only" style="color:var(--accent);cursor:pointer">Running Robinhood-Only</span>.</p>
+      <p><strong>Fix:</strong> Contact the admin at <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> and ask for a bot refresh. This regenerates a matched API key and PEM pair, and your bot gives you a fresh GMGN link to click during setup.</p>
     </div>
   </div>
 
@@ -2430,12 +2288,12 @@ early</pre>
   <p class="page-subtitle">If you only want to trade on Robinhood chain and do not need GMGN / Solana setup.</p>
 
   <h2>During Initial Setup</h2>
-  <p>When the console asks for the GMGN API key, type anything (or blank) and continue. When asked about Robinhood, type <code>yes</code> and enter your EVM private key and QuickNode URL. The bot starts Robinhood-only.</p>
+  <p>When the bot asks for the GMGN API key, type anything (or blank) and continue. When asked about Robinhood, type <code>yes</code> and enter your EVM private key and QuickNode URL. The bot starts Robinhood-only.</p>
 
-  <h2>After Setup — via config.local</h2>
-  <p>Open <code>config.local</code> and set:</p>
-  <pre>GMGN_API_KEY = ''</pre>
-  <p>Delete <code>.cache</code> and restart. The bot detects the blank key and skips all Solana/GMGN functionality.</p>
+  <div class="callout info">
+    <div class="callout-title">ℹ️ Switching After Setup</div>
+    Already finished setup and want to change to Robinhood-only? Contact the admin at <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> and ask for a bot refresh, then choose Robinhood-only when you run through the prompts again.
+  </div>
 
   <div class="callout warn">
     <div class="callout-title">⚠️ Make Sure Your Channels Match</div>
@@ -2444,7 +2302,7 @@ early</pre>
 
   <div class="page-nav">
     <span class="page-nav-btn" data-page="concepts-auto-buy"><span class="arrow">←</span> How Auto-Buy Works</span>
-    <span class="page-nav-btn" data-page="media-guide">Adding Images &amp; GIFs <span class="arrow">→</span></span>
+    <span class="page-nav-spacer"></span>
   </div>
 </div>
 
