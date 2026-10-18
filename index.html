@@ -6,22 +6,22 @@
   <title>ScrapeChain Bot — Setup &amp; Reference</title>
   <style>
     :root {
-      --bg: #0d0f14;
-      --surface: #151820;
-      --surface2: #1c2030;
-      --border: #2a2f42;
-      --accent: #4f8ef7;
-      --accent-dim: #1e3a6e;
-      --green: #2ecc71;
-      --green-dim: #1a4a30;
-      --yellow: #f0c040;
-      --yellow-dim: #3a3010;
-      --red: #e74c3c;
-      --red-dim: #3a1010;
-      --text: #d4d8e8;
-      --text-muted: #7a8099;
-      --text-bright: #f0f2fa;
-      --sidebar-w: 272px;
+      --bg: #111214;
+      --surface: #2b2d2f;
+      --surface2: #1d1f21;
+      --border: #414446;
+      --accent: #b33923;
+      --accent-dim: #4d241d;
+      --green: #62bd83;
+      --green-dim: #173624;
+      --yellow: #e6c56d;
+      --yellow-dim: #3a301c;
+      --red: #df786a;
+      --red-dim: #3a201d;
+      --text: #d1d3d2;
+      --text-muted: #9a9d9d;
+      --text-bright: #e0e0e0;
+      --sidebar-w: 292px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -308,15 +308,282 @@
       #main { padding: 28px 18px; height: auto; overflow-y: visible; }
       .chain-grid, .next-steps { grid-template-columns: 1fr; }
     }
+
+    /* ScrapeChain documentation refresh: presentation and navigation only. */
+    html { color-scheme: dark; scroll-behavior: smooth; }
+    body {
+      display: flex;
+      background:
+        radial-gradient(ellipse at 80% -10%, rgba(179,57,35,.12), transparent 38%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    #sidebar {
+      width: var(--sidebar-w);
+      height: 100vh;
+      flex: 0 0 var(--sidebar-w);
+      background: linear-gradient(180deg, #222426 0%, #191b1d 100%);
+      border-right: 1px solid var(--border);
+      box-shadow: 14px 0 36px rgba(0,0,0,.14);
+      scrollbar-color: #55595a transparent;
+    }
+    .sidebar-logo {
+      position: relative;
+      padding: 23px 18px 18px 66px;
+      border-bottom-color: #3b3e40;
+    }
+    .sidebar-logo::before {
+      content: "";
+      position: absolute;
+      top: 21px;
+      left: 18px;
+      width: 34px;
+      height: 34px;
+      border: 1px solid #55595a;
+      border-radius: 5px;
+      background:
+        linear-gradient(135deg, transparent 0 45%, rgba(224,224,224,.16) 45% 100%),
+        var(--accent);
+      box-shadow: 0 5px 14px rgba(0,0,0,.22);
+    }
+    .sidebar-logo h1 {
+      color: var(--text-bright);
+      font-size: 15px;
+      letter-spacing: -.02em;
+    }
+    .sidebar-logo span {
+      display: block;
+      margin-top: 4px;
+      color: #b1b4b3;
+      font-size: 10px;
+      letter-spacing: .04em;
+    }
+    .menu-search { padding: 15px 13px 9px; }
+    .menu-search input {
+      display: block;
+      width: 100%;
+      min-height: 39px;
+      padding: 9px 12px;
+      border: 1px solid #484b4c;
+      border-radius: 7px;
+      outline: none;
+      background: #151718;
+      color: var(--text-bright);
+      font: inherit;
+      font-size: 12px;
+      transition: border-color .16s ease, box-shadow .16s ease;
+    }
+    .menu-search input::placeholder { color: #8d9191; }
+    .menu-search input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(179,57,35,.18);
+    }
+    .nav-group {
+      margin: 3px 9px;
+      overflow: hidden;
+      border: 0;
+      border-radius: 8px;
+    }
+    .nav-group-header {
+      min-height: 38px;
+      padding: 10px 11px;
+      border-radius: 7px;
+      color: #a9acab;
+      font-size: 10px;
+      letter-spacing: .12em;
+      transition: background .16s ease, color .16s ease;
+    }
+    .nav-group-header:hover,
+    .nav-group.open .nav-group-header {
+      background: rgba(224,224,224,.045);
+      color: var(--text-bright);
+    }
+    .nav-group-header:focus-visible,
+    #sidebar a:focus-visible,
+    .menu-toggle:focus-visible {
+      outline: 2px solid #d1644d;
+      outline-offset: 2px;
+    }
+    .nav-group-header .arrow { color: #cf6a54; }
+    #sidebar a {
+      margin: 2px 0;
+      padding: 8px 10px;
+      border-left: 2px solid transparent;
+      border-radius: 6px;
+      color: #b0b3b2;
+      font-size: 12px;
+      line-height: 1.45;
+      transition: background .16s ease, color .16s ease, border-color .16s ease;
+    }
+    #sidebar a:hover,
+    #sidebar a.active {
+      border-left-color: var(--accent);
+      background: rgba(179,57,35,.14);
+      color: var(--text-bright);
+      text-decoration: none;
+    }
+    #sidebar a.sub { padding-left: 18px; }
+    #sidebar a.subsub { padding-left: 28px; color: #9fa2a2; }
+    #sidebar [hidden] { display: none !important; }
+    #main {
+      width: 100%;
+      max-width: none;
+      min-width: 0;
+      height: 100vh;
+      margin: 0;
+      padding: 34px clamp(22px, 5vw, 72px);
+      overflow-y: auto;
+      scrollbar-color: #55595a transparent;
+    }
+    .page { width: min(100%, 1010px); margin: 0 auto; }
+    .page.active {
+      padding: clamp(24px, 4vw, 48px);
+      border: 1px solid #36393a;
+      border-radius: 14px;
+      background: linear-gradient(145deg, rgba(43,45,47,.94), rgba(25,27,29,.98));
+      box-shadow: 0 18px 48px rgba(0,0,0,.2);
+    }
+    .page-title {
+      font-size: clamp(30px, 4vw, 42px);
+      line-height: 1.12;
+      letter-spacing: -.045em;
+    }
+    .page-title::after {
+      display: block;
+      width: 42px;
+      height: 3px;
+      margin-top: 14px;
+      border-radius: 2px;
+      background: var(--accent);
+      content: "";
+    }
+    .page-subtitle {
+      margin-bottom: 30px;
+      padding-bottom: 23px;
+      border-bottom-color: #454849;
+      color: #b4b7b6;
+    }
+    h2 { color: var(--text-bright); }
+    h3 { color: #e7e7e5; }
+    h4 { color: #d16a54; }
+    a { color: #d16a54; }
+    a:hover { color: #ed8a72; }
+    code {
+      border-color: #424546;
+      background: #181a1b;
+      color: #e6a08f;
+    }
+    pre {
+      border-color: #424546;
+      background: #161819;
+      color: #d9d9d6;
+    }
+    th { background: #222426; color: #c0c3c2; }
+    td { border-color: #3d4041; }
+    tr:nth-child(even) td { background: rgba(17,18,20,.35); }
+    td:first-child { color: var(--text-bright); }
+    .page-nav-btn {
+      border-color: #444849;
+      border-radius: 7px;
+      background: #222426;
+      color: #c2c5c4;
+    }
+    .page-nav-btn:hover,
+    .next-card:hover { border-color: var(--accent); }
+    .chain-card.sol { border-top-color: var(--accent); }
+    .chain-card.evm { border-top-color: #7d8081; }
+    .badge-sol { background: var(--accent-dim); color: #e59b88; }
+    .badge-evm { border: 1px solid #484b4c; background: #303234; color: #d1d3d2; }
+    .trouble-link a { color: #d16a54; }
+    #main [style*="color:#7a9cd8"] { color: #d16a54 !important; }
+    .menu-toggle { display: none; }
+    @media (max-width: 768px) {
+      body { display: block; flex-direction: initial; }
+      .menu-toggle {
+        position: fixed;
+        z-index: 1200;
+        top: 12px;
+        left: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 42px;
+        padding: 0 13px;
+        border: 1px solid #4a4d4e;
+        border-radius: 8px;
+        background: #202224;
+        box-shadow: 0 8px 24px rgba(0,0,0,.3);
+        color: var(--text-bright);
+        font: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .menu-toggle-mark,
+      .menu-toggle-mark::before,
+      .menu-toggle-mark::after {
+        display: block;
+        width: 15px;
+        height: 2px;
+        border-radius: 2px;
+        background: #d16a54;
+      }
+      .menu-toggle-mark { position: relative; }
+      .menu-toggle-mark::before,
+      .menu-toggle-mark::after { position: absolute; left: 0; content: ""; }
+      .menu-toggle-mark::before { top: -5px; }
+      .menu-toggle-mark::after { top: 5px; }
+      #sidebar {
+        position: fixed;
+        z-index: 1100;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: min(88vw, 330px);
+        height: 100dvh;
+        border-right: 1px solid var(--border);
+        border-bottom: 0;
+        box-shadow: 18px 0 42px rgba(0,0,0,.4);
+        transform: translateX(-105%);
+        transition: transform .22s ease;
+      }
+      #sidebar.is-open { transform: translateX(0); }
+      #main {
+        height: auto;
+        padding: 72px 14px 28px;
+        overflow: visible;
+      }
+      .page.active { padding: 23px 18px; border-radius: 11px; }
+      .page-nav { gap: 10px; }
+      .page-nav-btn { padding: 9px 12px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
   </style>
 </head>
 <body>
 
+<button class="menu-toggle" id="menu-toggle" type="button" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle documentation menu">
+  <span class="menu-toggle-mark" aria-hidden="true"></span>
+  <span>Menu</span>
+</button>
+
 <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
-<nav id="sidebar">
+<nav id="sidebar" aria-label="Documentation navigation">
   <div class="sidebar-logo">
     <h1>ScrapeChain Bot</h1>
     <span>Setup &amp; Reference Guide</span>
+  </div>
+
+  <div class="menu-search">
+    <input id="menu-search" type="search" placeholder="Search this guide" aria-label="Search this guide" autocomplete="off" />
   </div>
 
   <!-- INTRODUCTION -->
@@ -331,11 +598,9 @@
   <div class="nav-group open" data-group="setup">
     <div class="nav-group-header">Setup <span class="arrow">▶</span></div>
     <div class="nav-group-links">
-      <a data-page="setup">Get Your License</a>
       <a data-page="setup-keys" class="sub">Gather Your Keys</a>
-      <a data-page="setup-wallet" class="sub">GMGN Wallet Setup</a>
+      <a data-page="setup-wallet" class="sub">Solana Wallet Setup</a>
       <a data-page="setup-activation" class="sub">Bot Activation</a>
-      <a data-page="setup-gmgn-api" class="sub">GMGN API Key</a>
       <a data-page="setup-chains" class="sub">Solana &amp; Robinhood Keys</a>
       <a data-page="setup-verify" class="sub">Telegram Verification</a>
       <a data-page="setup-after" class="sub">After Setup</a>
@@ -347,11 +612,7 @@
     <div class="nav-group-header">Corrections &amp; Troubleshooting <span class="arrow">▶</span></div>
     <div class="nav-group-links">
       <a data-page="err-no-wallet" class="sub">No Wallet Configured</a>
-      <a data-page="err-op-forbidden" class="sub">Operation Forbidden</a>
-      <a data-page="err-signature" class="sub">Signature Invalid (401)</a>
-      <a data-page="err-gmgn-missing" class="sub">GMGN Not Configured</a>
       <a data-page="err-fee-reserve" class="sub">Insufficient Balance</a>
-      <a data-page="err-2fa-wait" class="sub">2FA Binding Wait</a>
     </div>
   </div>
 
@@ -364,6 +625,7 @@
       <a data-page="settings-rug" class="sub">Rug Shield</a>
       <a data-page="settings-honeypot" class="subsub">Honeypot Shield</a>
       <a data-page="settings-dev-sell" class="subsub">Dev Sell Shield</a>
+      <a data-page="settings-rug-delay" class="subsub">Exit Delay</a>
       <a data-page="settings-fees" class="sub">Smart Fees</a>
       <a data-page="settings-fees-toggle" class="subsub">Smart Fees Toggle</a>
       <a data-page="settings-exit-fee" class="subsub">Exit Fee Escalation</a>
@@ -379,11 +641,13 @@
       <a data-page="source-add" class="sub">Adding a Channel</a>
       <a data-page="source-sol" class="sub">SOL Channel Settings</a>
       <a data-page="source-buy-amount" class="subsub">Buy Amount</a>
+      <a data-page="source-dynamic-sizing" class="subsub">Dynamic Buy Sizing</a>
       <a data-page="source-slippage" class="subsub">Slippage</a>
       <a data-page="source-priority-fee" class="subsub">Priority Fee</a>
       <a data-page="source-anti-mev" class="subsub">Anti-MEV</a>
       <a data-page="source-stop-loss" class="subsub">Stop Loss</a>
       <a data-page="source-take-profit" class="subsub">Take Profit</a>
+      <a data-page="source-dormant" class="subsub">Dormant Sell</a>
       <a data-page="source-safety-filters" class="subsub">Safety Filters</a>
       <a data-page="source-robinhood" class="sub">Robinhood Channel Settings</a>
       <a data-page="source-disable" class="sub">Disable Channel</a>
@@ -391,6 +655,7 @@
       <a data-page="source-dynamic" class="sub">Dynamic Filters</a>
       <a data-page="source-add-filter" class="subsub">Add Filter</a>
       <a data-page="source-multi-filter" class="subsub">Multi-Filter (AND Logic)</a>
+      <a data-page="source-blacklist" class="subsub">Blacklist</a>
       <a data-page="source-remove" class="sub">Remove Channel</a>
     </div>
   </div>
@@ -436,8 +701,8 @@
   <table>
     <thead><tr><th>Chain</th><th>Type</th><th>Execution</th></tr></thead>
     <tbody>
-      <tr><td><strong>◎ Solana (SOL)</strong></td><td>L1</td><td>Via GMGN with Jito bundle support</td></tr>
-      <tr><td><strong>🟢 Robinhood</strong></td><td>EVM L2</td><td>Via your QuickNode RPC endpoint</td></tr>
+      <tr><td><strong>◎ Solana (SOL)</strong></td><td>L1</td><td>Native — Jupiter &amp; PumpPortal with Jito MEV support</td></tr>
+      <tr><td><strong>🟢 Robinhood</strong></td><td>EVM L2</td><td>Native — Uniswap V3 / V4 &amp; Pons via your Alchemy RPC endpoint</td></tr>
     </tbody>
   </table>
 
@@ -446,7 +711,7 @@
     <li>You add Telegram channels/groups to the bot's Source Monitor.</li>
     <li>When a message containing a valid contract address appears, the bot validates it against your safety filters.</li>
     <li>If it passes, the bot buys automatically using your configured amount, slippage, and fee settings.</li>
-    <li>The bot then monitors the position and sells when your Stop Loss, Take Profit, or Rug Shield conditions are met.</li>
+    <li>The bot then monitors the position and sells when your Stop Loss, Take Profit, Dormant Sell, or Rug Shield conditions are met.</li>
   </ol>
 
   <div class="callout success">
@@ -471,69 +736,42 @@
 
   <div class="page-nav">
     <span class="page-nav-spacer"></span>
-    <span class="page-nav-btn" data-page="setup">Get Your License <span class="arrow">→</span></span>
+    <span class="page-nav-btn" data-page="setup">Before You Start <span class="arrow">→</span></span>
   </div>
 </div>
 
 
 <!-- ══════════════════════════════════════════════════
-     SETUP — OVERVIEW / LICENSE
+     SETUP — OVERVIEW
 ══════════════════════════════════════════════════ -->
 <div class="page" id="setup">
-  <h1 class="page-title">Get Your License</h1>
-  <p class="page-subtitle">Before running the bot you need a license. This is the first step. Follow it in order — each subsequent step builds on the last.</p>
+  <h1 class="page-title">Before You Start</h1>
+  <p class="page-subtitle">ScrapeChain runs on its own — there is nothing to install, license, or compile. The only thing you provide is a set of keys and wallet addresses, entered once during activation.</p>
+
+  <div class="callout success">
+    <div class="callout-title">✅ No License, No Console</div>
+    The bot is switched on for you. There is no license key to request and no config file to edit. When you open the bot on Telegram it walks you through entering your details, one prompt at a time.
+  </div>
 
   <div class="callout info">
     <div class="callout-title">📋 What You Will Need</div>
-    A Telegram account &bull; A GMGN account (via the referral link below) &bull; A crypto wallet (Phantom or any Solana wallet)
+    A Telegram account &bull; API credentials from <a href="https://my.telegram.org" target="_blank">my.telegram.org</a> &bull; A Solana wallet private key (required for Solana) &bull; A Helius API key (optional but recommended) &bull; For Robinhood: an EVM wallet private key and a free Alchemy RPC URL.
   </div>
 
-  <h2>Get Your License</h2>
-  <div class="step">
-    <div class="step-num">1</div>
-    <div class="step-body">
-      <strong>Sign up for GMGN</strong> using this referral link: <a href="https://gmgn.ai/r/TGScraper" target="_blank">gmgn.ai/r/TGScraper</a>. You <em>must</em> use this link — the license system checks for it. Do not go to gmgn.ai directly. Afterwards, copy the <strong>last 4 digits of your GMGN UID</strong>.
-    </div>
-  </div>
-  <div class="step">
-    <div class="step-num">2</div>
-    <div class="step-body">
-      <strong>Create your bot with <a href="https://t.me/BotFather" target="_blank">@BotFather</a></strong> on Telegram. Send <code>/newbot</code>, follow the prompts, and copy the token it gives you — it looks like <code>123456789:AAF...</code>
-    </div>
-  </div>
-  <div class="step">
-    <div class="step-num">3</div>
-    <div class="step-body">
-      <strong>Open <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> and press Start.</strong> It replies with a setup phrase you will need on the form. This chat is also where your license key and your "bot is live" message arrive.
-    </div>
-  </div>
-  <div class="step">
-    <div class="step-num">4</div>
-    <div class="step-body">
-      <strong>Create your account</strong> at <a href="https://scrapechainbot.xyz" target="_blank">scrapechainbot.xyz</a>, then choose a plan — <strong>Free</strong> or <strong>Pro ($5 / 30 days)</strong>. Pro is paid with Solana Pay at checkout.
-    </div>
-  </div>
-  <div class="step">
-    <div class="step-num">5</div>
-    <div class="step-body">
-      <strong>Fill in the setup form.</strong> Select <em>I need a license (first time)</em>, then enter your setup phrase, Telegram user ID, bot token, and the last 4 digits of your GMGN UID. Submit.
-    </div>
-  </div>
-  <div class="step">
-    <div class="step-num">6</div>
-    <div class="step-body">
-      <strong>Wait for your confirmation.</strong> Requests are processed between <strong>8:00 AM and 10:00 PM UTC</strong> and your bot goes live within <strong>1 hour</strong>. Submit outside those hours and it is picked up at 8:00 AM UTC. <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> messages you the moment it is live, with your license key.
-    </div>
-  </div>
+  <h2>Do You Need Both Chains?</h2>
+  <p>No. Solana and Robinhood are independent. If you only trade Solana tokens you can skip all the EVM and Alchemy steps. If you only want Robinhood chain you can skip the Solana wallet. Not sure which you need? Read <span class="nav-inline" data-page="concepts-chains" style="color:var(--accent);cursor:pointer">Solana vs Robinhood Chain</span> first.</p>
 
-  <div class="callout success">
-    <div class="callout-title">✅ Keep Your License Key</div>
-    Save the license key you receive. Next time you set up a bot, choose <em>I already have a license key</em> on the form and enter it instead of requesting a new one.
-  </div>
-
-  <div class="callout info">
-    <div class="callout-title">ℹ️ Nothing to Install</div>
-    Your bot is prepared and switched on for you — there is no console, terminal, or config file to touch. The rest of this guide covers the keys you enter inside the bot on Telegram and how to configure trading.
+  <h2>What Is Not Needed Anymore</h2>
+  <p>Older guides mention a GMGN account and a QuickNode endpoint. Neither is used by the current bot:</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Old Requirement</th><th>Status Now</th></tr></thead>
+      <tbody>
+        <tr><td>GMGN account / API key / PEM file</td><td><span class="badge badge-off">Not used</span> — Solana trades execute natively through Jupiter &amp; PumpPortal.</td></tr>
+        <tr><td>QuickNode RPC</td><td><span class="badge badge-off">Not used</span> — Robinhood uses your Alchemy RPC with the free provider pool as failover.</td></tr>
+        <tr><td>License key</td><td><span class="badge badge-off">Not used</span> — the bot is activated directly.</td></tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="page-nav">
@@ -552,7 +790,7 @@
 
   <div class="callout info">
     <div class="callout-title">ℹ️ Solana or Robinhood — or Both?</div>
-    You do not need both chains. If you only trade Solana tokens, skip the EVM and QuickNode keys. If you only want Robinhood chain, you can skip Solana. Not sure which you need? Read <span class="nav-inline" data-page="concepts-chains" style="color:var(--accent);cursor:pointer">Solana vs Robinhood Chain</span> before continuing.
+    You do not need both chains. If you only trade Solana tokens, skip the EVM and Alchemy keys. If you only want Robinhood chain, you can skip the Solana wallet. Not sure which you need? Read <span class="nav-inline" data-page="concepts-chains" style="color:var(--accent);cursor:pointer">Solana vs Robinhood Chain</span> before continuing.
   </div>
 
   <h2>Telegram Bot Token</h2>
@@ -572,36 +810,36 @@
   <h2>Your Telegram User ID</h2>
   <p>Start a chat with <a href="https://t.me/userinfobot" target="_blank">@userinfobot</a> on Telegram. It will reply with your numeric user ID.</p>
 
-  <h2>GMGN Wallet Private Key</h2>
-  <ol>
-    <li>Go to <a href="https://gmgn.ai/portfolio" target="_blank">gmgn.ai/portfolio</a></li>
-    <li>Find the wallet you want to trade with (SOL, Robinhood, or both). GMGN creates default wallets — you can also import your own.</li>
-    <li>Click the three-dot menu on the wallet and choose to export the private key.</li>
-  </ol>
+  <h2>Solana Wallet Private Key <span class="badge badge-sol">SOL</span></h2>
+  <p>The base58 private key (~88 characters) of the Solana wallet the bot should trade from. Export it from Phantom, Solflare, or whichever wallet you use. <strong>Never share this with anyone</strong> — it gives full control of the wallet. See <span data-page="setup-wallet" style="color:var(--accent);cursor:pointer">Solana Wallet Setup</span> for details.</p>
 
   <h2>Helius API Key <span class="badge badge-sol">SOL</span></h2>
   <ol>
     <li>Sign up at <a href="https://dashboard.helius.dev/signup" target="_blank">dashboard.helius.dev/signup</a></li>
-    <li>After the questionnaire, scroll down and select <strong>Continue with Free plan</strong>.</li>
+    <li>After the questionnaire, select <strong>Continue with Free plan</strong>.</li>
     <li>Go to <strong>API Keys</strong> and copy your key.</li>
   </ol>
+  <p>Helius is a faster Solana RPC. Without it the bot uses the free public endpoint — slower and more rate-limited when the network is busy. Recommended, but skippable.</p>
 
-  <h2>QuickNode RPC URL <span class="badge badge-evm">ROBINHOOD</span></h2>
+  <h2>EVM Wallet Private Key <span class="badge badge-evm">ROBINHOOD</span></h2>
+  <p>The hex private key (with or without <code>0x</code>, ~64 hex characters) of the wallet the bot should trade from on Robinhood chain. <strong>Never share this with anyone.</strong> Only needed if you plan to trade on Robinhood.</p>
+
+  <h2>Alchemy Robinhood RPC URL <span class="badge badge-evm">ROBINHOOD</span> <span class="badge">REQUIRED FOR RH</span></h2>
   <ol>
-    <li>Sign up at <a href="https://dashboard.quicknode.com/?prompt=signup" target="_blank">dashboard.quicknode.com</a>. If you see an error after signup, simply sign in again and verify your email.</li>
-    <li>Click <strong>Endpoints</strong>, then <strong>Create Endpoint</strong>.</li>
-    <li>Choose <strong>Robinhood → Robinhood Mainnet</strong>.</li>
-    <li>Copy the first URL under API Access URL. It looks like <code>https://xxx.robinhood.quiknode.pro/xxx/</code></li>
+    <li>Sign up free at <a href="https://dashboard.alchemy.com" target="_blank">dashboard.alchemy.com</a>.</li>
+    <li>Create an app on the <strong>Robinhood Chain</strong> network.</li>
+    <li>Copy its HTTPS endpoint — it looks like <code>https://robinhood-mainnet.g.alchemy.com/v2/your-key</code>.</li>
   </ol>
+  <p>If you choose to trade Robinhood, this is <strong>required</strong> — setup will not continue without a valid URL. The built-in free provider pool is used only as automatic failover.</p>
 
   <div class="callout info">
-    <div class="callout-title">ℹ️ Only need one chain?</div>
-    You only need the Helius key for Solana trading and the QuickNode URL for Robinhood trading. You can skip whichever chain you don't plan to use — the bot lets you opt out during setup.
+    <div class="callout-title">ℹ️ No GMGN or QuickNode Needed</div>
+    Older guides told you to create a GMGN account and a QuickNode endpoint. Neither is used anymore. Solana trades execute natively, and Robinhood uses your Alchemy RPC.
   </div>
 
   <div class="page-nav">
-    <span class="page-nav-btn" data-page="setup"><span class="arrow">←</span> Get Your License</span>
-    <span class="page-nav-btn" data-page="setup-wallet">GMGN Wallet Setup <span class="arrow">→</span></span>
+    <span class="page-nav-btn" data-page="setup"><span class="arrow">←</span> Before You Start</span>
+    <span class="page-nav-btn" data-page="setup-wallet">Solana Wallet Setup <span class="arrow">→</span></span>
   </div>
 </div>
 
@@ -610,36 +848,25 @@
      SETUP — WALLET
 ══════════════════════════════════════════════════ -->
 <div class="page" id="setup-wallet">
-  <h1 class="page-title">GMGN Wallet Setup</h1>
-  <p class="page-subtitle">GMGN creates a default wallet when you sign up. You can use it, or import your own. Either way there is a wallet <em>selection</em> step that nearly every setup error traces back to — read this carefully.</p>
+  <h1 class="page-title">Solana Wallet Setup</h1>
+  <p class="page-subtitle">The bot trades Solana natively and signs transactions locally — there is no GMGN account and no wallet import into any website. All you need is the wallet's private key.</p>
 
-  <h2>Option A — Import Your Own Wallet (Recommended)</h2>
-  <div class="step">
-    <div class="step-num">1</div>
-    <div class="step-body">Go to <a href="https://gmgn.ai/portfolio" target="_blank">gmgn.ai/portfolio</a>. On mobile, switch to <strong>Desktop Mode</strong> in your browser settings first — the import option is hidden in the mobile layout.</div>
-  </div>
-  <div class="step">
-    <div class="step-num">2</div>
-    <div class="step-body">At the top of the portfolio page, find the wallet list. Click the <strong>Import</strong> button (may appear as a ＋ or import icon) and paste your Solana wallet's private key.</div>
-  </div>
-  <div class="step">
-    <div class="step-num">3</div>
-    <div class="step-body">
-      <strong style="color:#f0c040">⚠️ Critical — select the imported wallet.</strong> After importing, your wallet appears in the list <em>alongside</em> the GMGN default wallet. Look for a <strong>checkbox or radio button</strong> next to each wallet and <strong>tick your imported wallet</strong> to make it active. If you skip this, the API uses the empty default wallet and nothing works.
-    </div>
-  </div>
+  <h2>Getting Your Private Key</h2>
+  <ol>
+    <li>Open the wallet you want the bot to trade from (Phantom, Solflare, Backpack, etc.).</li>
+    <li>Go to <strong>Settings → Security &amp; Privacy → Export Private Key</strong> (wording varies slightly by wallet).</li>
+    <li>Authenticate, then copy the exported key. It is a base58 string of about 88 characters.</li>
+    <li>Paste it into the bot when it asks for the <strong>Solana wallet private key</strong> during activation.</li>
+  </ol>
 
   <div class="callout warn">
-    <div class="callout-title">⚠️ Two Wallets Means You Must Choose One</div>
-    If you kept the GMGN default wallet <em>and</em> imported your own, GMGN will not know which one the API should use. You must tick/select exactly one wallet. The unticked wallet is completely ignored by the API.
+    <div class="callout-title">⚠️ Use a Dedicated Wallet</div>
+    The bot holds this key on its host. Use a wallet dedicated to bot trading and only fund it with what you intend to trade — never your main holdings wallet.
   </div>
 
-  <h2>Option B — Use the GMGN Default Wallet</h2>
-  <p>GMGN creates a wallet for you automatically. To get its private key, go to the portfolio page, click the three-dot <strong>⋯</strong> menu on that wallet, and choose <strong>Export Private Key</strong>.</p>
-
-  <div class="callout warn">
-    <div class="callout-title">⚠️ New Accounts — 2FA Export Wait</div>
-    If you just set up GMGN, there may be a waiting period before you can export the default wallet's private key (GMGN will show a message referencing a future date). If you see this, use Option A — importing your own wallet bypasses the wait entirely.
+  <div class="callout error">
+    <div class="callout-title">🚫 Never Share the Key</div>
+    Anyone with the private key has full control of the wallet. The bot stores it locally and never sends it anywhere. Do not paste it into chats, websites, or forms other than the bot's own activation prompt.
   </div>
 
   <div class="page-nav">
@@ -669,96 +896,38 @@
   </ol>
 
   <h2>Enter Your Keys</h2>
-  <p>The bot will prompt you for each key in this order. Send each value as a normal Telegram message:</p>
+  <p>The bot prompts you for each value in this order. Send each one as a normal Telegram message:</p>
 
   <table>
     <thead><tr><th>#</th><th>Prompt</th><th>What to enter</th></tr></thead>
     <tbody>
-      <tr><td>1</td><td>API_ID</td><td>From my.telegram.org</td></tr>
+      <tr><td>1</td><td>API_ID</td><td>From my.telegram.org (numbers only)</td></tr>
       <tr><td>2</td><td>API_HASH</td><td>From my.telegram.org</td></tr>
       <tr><td>3</td><td>PHONE NUMBER</td><td>Your Telegram phone number with country code</td></tr>
-      <tr><td>4</td><td>2FA?</td><td>Type <code>Yes</code> if your Telegram account has 2-factor authentication, otherwise <code>No</code></td></tr>
-      <tr><td>4b</td><td>2FA pin</td><td>If you typed Yes above, enter your 2FA PIN</td></tr>
-      <tr><td>5</td><td>GMGN link</td><td>Open the GMGN link the bot sends. It creates your API key and enables trading (requires Google Authenticator 2FA).</td></tr>
-      <tr><td>6</td><td>GMGN API key</td><td>Paste the key generated by the link in step 5</td></tr>
-      <tr><td>7</td><td>Solana private key</td><td>The private key from your GMGN SOL wallet</td></tr>
-      <tr><td>8</td><td>Helius API key</td><td>Your Helius developer API key</td></tr>
-      <tr><td>9</td><td>Robinhood?</td><td>Type <code>No</code> to skip EVM, or <code>Yes</code> to continue</td></tr>
-      <tr><td>9b</td><td>EVM private key</td><td>If Yes, paste your EVM wallet private key</td></tr>
-      <tr><td>9c</td><td>QuickNode URL</td><td>If Yes, paste your QuickNode Robinhood endpoint URL</td></tr>
-      <tr><td>10</td><td>Confirm</td><td>Type <code>Yes</code></td></tr>
-      <tr><td>11</td><td>Telegram code</td><td>A code is sent to your Telegram — paste it and send. You're now logged in.</td></tr>
+      <tr><td>4</td><td>2-STEP PROTECTION?</td><td>Type <code>Yes</code> if your Telegram account has 2-factor authentication, otherwise <code>No</code></td></tr>
+      <tr><td>4b</td><td>ACCOUNT PASSWORD</td><td>If you typed Yes above, enter your 2FA password</td></tr>
+      <tr><td>5</td><td>SOLANA WALLET PRIVATE KEY</td><td>Your Solana wallet private key (base58). May be skipped if you only trade Robinhood.</td></tr>
+      <tr><td>6</td><td>HELIUS API KEY</td><td>Your Helius key, or press Enter to use the free public RPC</td></tr>
+      <tr><td>7</td><td>TRADE ON ROBINHOOD?</td><td>Type <code>Yes</code> to set up EVM / Robinhood, or <code>No</code> to skip</td></tr>
+      <tr><td>7b</td><td>EVM WALLET PRIVATE KEY</td><td>If Yes, paste your EVM wallet private key</td></tr>
+      <tr><td>7c</td><td>ALCHEMY ROBINHOOD RPC URL</td><td>If Yes, paste your Alchemy Robinhood endpoint. <strong>Required</strong> — the bot loops until you enter a valid URL.</td></tr>
+      <tr><td>8</td><td>CONFIRM</td><td>Type <code>Yes</code>. Typing <code>No</code> restarts the wizard from Step 1.</td></tr>
+      <tr><td>9</td><td>Telegram code</td><td>A code is sent to your Telegram — paste it and send. You're now logged in.</td></tr>
     </tbody>
   </table>
 
   <div class="callout info">
-    <div class="callout-title">ℹ️ Your License and Bot Token Are Already Set</div>
-    You entered those on the website form, so the bot does not ask for them again. Setup starts straight at your Telegram API credentials.
+    <div class="callout-title">ℹ️ Bot Token Is Already Set</div>
+    Your bot token is configured from the start, so setup begins straight at your Telegram API credentials. There is no license step and no GMGN API key — Solana trades execute natively.
   </div>
 
   <div class="callout success">
     <div class="callout-title">✅ Setup complete!</div>
-    Before making your first trade, set a buy amount for each channel you add. You can also configure Stop Loss, Take Profit, and other parameters.
+    Before making your first trade, set a buy amount for each channel you add. You can also configure Stop Loss, Take Profit, Dormant Sell, and other parameters.
   </div>
 
   <div class="page-nav">
-    <span class="page-nav-btn" data-page="setup-wallet"><span class="arrow">←</span> GMGN Wallet Setup</span>
-    <span class="page-nav-btn" data-page="setup-gmgn-api">GMGN API Key <span class="arrow">→</span></span>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════════
-     SETUP — GMGN API KEY
-══════════════════════════════════════════════════ -->
-<div class="page" id="setup-gmgn-api">
-  <h1 class="page-title">GMGN API Key</h1>
-  <p class="page-subtitle">After confirming your credentials, the bot generates a special link. This link creates your API key on GMGN and simultaneously creates a matching signing key for your bot. These two are always generated as a matched pair.</p>
-
-  <div class="step">
-    <div class="step-num">1</div>
-    <div class="step-body">The console shows a link starting with <code>https://gmgn.ai/...</code>. Copy it and open in your browser. A new API key is automatically created on your GMGN account.</div>
-  </div>
-  <div class="step">
-    <div class="step-num">2</div>
-    <div class="step-body">On the GMGN API page, find the newly created key. Click to expand it and <strong>verify your trading wallet is selected</strong>. If you have more than one wallet, make sure the correct one is ticked — not the default empty one.</div>
-  </div>
-  <div class="step">
-    <div class="step-num">3</div>
-    <div class="step-body">Toggle <strong>Enable Trading</strong> to ON and save. You need <strong>Google Authenticator</strong> set up on your GMGN account to do this — email alone is not enough.</div>
-  </div>
-  <div class="step">
-    <div class="step-num">4</div>
-    <div class="step-body">Copy the API key (it starts with <code>gmgn_</code>…) and paste it into the bot console. Click Send.</div>
-  </div>
-
-  <div class="callout error">
-    <div class="callout-title">🚫 Do Not Create the Key Manually</div>
-    Do not go to GMGN's API page on your own and create a key. The API key and PEM file are generated together. A manually created key will not match the PEM file and you will get <code>AUTH_SIGNATURE_INVALID</code> on every trade. Always use the link the bot gives you.
-  </div>
-
-  <div class="callout warn">
-    <div class="callout-title">⚠️ One API Key Per Setup — Old Keys Don't Work</div>
-    Every fresh setup (after a bot refresh) generates a new link and a new API key. If you paste an API key from a previous setup run, it won't match and will fail. Always use the key from the most recent link.
-  </div>
-
-  <div class="callout warn">
-    <div class="callout-title">⚠️ "Operation Forbidden" When Enabling Trading</div>
-    This means one of two things — both are explained in the troubleshooting section:
-    <ul style="margin-top:8px">
-      <li><strong>No wallet is selected</strong> on your GMGN account (most common)</li>
-      <li><strong>Security lock active</strong> — GMGN enforces a 24-hour lock after changing your login password or resetting existing 2FA. Adding 2FA for the first time does not trigger this.</li>
-    </ul>
-    <span data-page="err-op-forbidden" style="color:#7a9cd8;cursor:pointer;font-size:13px">→ Full fix for "Operation Forbidden"</span>
-  </div>
-
-  <div class="callout info">
-    <div class="callout-title">ℹ️ Skipping GMGN (Robinhood-only)</div>
-    If you only want to trade on Robinhood chain, you can skip this entire step. When the bot asks for the GMGN API key, type anything and continue. Choose Yes for Robinhood when asked and enter your EVM key and QuickNode URL. See <span data-page="concepts-robinhood-only" style="color:var(--accent);cursor:pointer">Running Robinhood-Only</span>.
-  </div>
-
-  <div class="page-nav">
-    <span class="page-nav-btn" data-page="setup-activation"><span class="arrow">←</span> Bot Activation</span>
+    <span class="page-nav-btn" data-page="setup-wallet"><span class="arrow">←</span> Solana Wallet Setup</span>
     <span class="page-nav-btn" data-page="setup-chains">Solana &amp; Robinhood Keys <span class="arrow">→</span></span>
   </div>
 </div>
@@ -766,29 +935,34 @@
 
 <!-- ══════════════════════════════════════════════════
      SETUP — CHAINS
-══════════════════════════════════════════════════ -->
+═════════════════════════════════════════════════ -->
 <div class="page" id="setup-chains">
   <h1 class="page-title">Solana &amp; Robinhood Keys</h1>
-  <p class="page-subtitle">After the GMGN API key step, the console continues asking for your trading keys in this order.</p>
+  <p class="page-subtitle">The keys the bot asks for, in order. Only the ones for the chain(s) you plan to trade are required.</p>
 
   <table>
     <thead><tr><th>#</th><th>Prompt</th><th>What to enter</th></tr></thead>
     <tbody>
-      <tr><td>9</td><td>GMGN API Key</td><td>The key starting with <code>gmgn_</code> from the previous step</td></tr>
-      <tr><td>10</td><td>Solana Private Key</td><td>Your Solana wallet private key (base58 string)</td></tr>
-      <tr><td>11</td><td>Helius API Key</td><td>Your key from <a href="https://dashboard.helius.dev" target="_blank">Helius</a></td></tr>
-      <tr><td>11a</td><td>Do you want Robinhood? (<code>yes</code> / <code>no</code>)</td><td>Type <code>yes</code> to set up Robinhood chain trading, <code>no</code> to skip</td></tr>
-      <tr><td>11b</td><td><em>(If yes)</em> EVM Private Key</td><td>Your EVM/MetaMask wallet private key</td></tr>
-      <tr><td>11c</td><td><em>(If yes)</em> QuickNode RPC URL</td><td>Your QuickNode HTTPS endpoint URL for Robinhood</td></tr>
-      <tr><td>12</td><td>Final confirmation</td><td>Type <code>yes</code></td></tr>
+      <tr><td>1</td><td>Solana Private Key</td><td>Your Solana wallet private key (base58). Required for Solana trading — skip if Robinhood-only.</td></tr>
+      <tr><td>2</td><td>Helius API Key</td><td>Your key from <a href="https://dashboard.helius.dev" target="_blank">Helius</a>, or press Enter to use the free public RPC</td></tr>
+      <tr><td>3</td><td>Do you want Robinhood? (<code>yes</code> / <code>no</code>)</td><td>Type <code>yes</code> to set up Robinhood chain trading, <code>no</code> to skip</td></tr>
+      <tr><td>3b</td><td><em>(If yes)</em> EVM Private Key</td><td>Your EVM wallet private key (hex, with or without <code>0x</code>)</td></tr>
+      <tr><td>3c</td><td><em>(If yes)</em> Alchemy Robinhood RPC URL</td><td>Your Alchemy HTTPS endpoint. <strong>Required</strong> for Robinhood — setup will not continue until a valid URL is entered.</td></tr>
+      <tr><td>4</td><td>Final confirmation</td><td>Type <code>yes</code></td></tr>
     </tbody>
   </table>
 
+  <div class="callout info">
+    <div class="callout-title">ℹ️ No GMGN, No QuickNode</div>
+    There is no GMGN API key step and no QuickNode endpoint. Solana is native; Robinhood uses Alchemy.
+  </div>
+
   <div class="page-nav">
-    <span class="page-nav-btn" data-page="setup-gmgn-api"><span class="arrow">←</span> GMGN API Key</span>
+    <span class="page-nav-btn" data-page="setup-activation"><span class="arrow">←</span> Bot Activation</span>
     <span class="page-nav-btn" data-page="setup-verify">Telegram Verification <span class="arrow">→</span></span>
   </div>
 </div>
+
 
 
 <!-- ══════════════════════════════════════════════════
@@ -881,8 +1055,8 @@
 
 
 <!-- ══════════════════════════════════════════════════
-     ERRORS
-══════════════════════════════════════════════════ -->
+     CORRECTIONS & TROUBLESHOOTING
+═════════════════════════════════════════════════ -->
 <div class="page" id="err-no-wallet">
   <h1 class="page-title">Error — No Wallet Configured</h1>
   <p class="page-subtitle">The bot can't find a valid Solana wallet to trade from.</p>
@@ -890,86 +1064,19 @@
   <div class="error-card">
     <div class="error-card-header"><span class="label">Error</span><code>No wallet configured</code></div>
     <div class="error-card-body">
-      <p><strong>What it means:</strong> Almost always a wallet selection issue in GMGN.</p>
+      <p><strong>What it means:</strong> The Solana wallet private key was not provided during setup, or it was entered incorrectly.</p>
       <p><strong>Fix:</strong></p>
       <ol>
-        <li>Go to <a href="https://gmgn.ai/portfolio" target="_blank">gmgn.ai/portfolio</a> (Desktop Mode on mobile).</li>
-        <li>Look at the wallet list. You will see the GMGN default wallet and any imported wallets.</li>
-        <li>Make sure exactly <strong>one wallet has a checkmark/tick</strong> — that is the one the API uses.</li>
-        <li>If the default wallet is ticked but your imported wallet is not, click to select your imported wallet instead.</li>
-        <li>Go back to the bot — your correct SOL balance should now appear.</li>
+        <li>Confirm the wallet has funds and that you exported the <strong>private key</strong> (not the public address).</li>
+        <li>The key is a base58 string of about 88 characters — a public address (32–44 chars) will not work.</li>
+        <li>If it still fails, contact the admin at <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> and ask for a bot refresh, then re-enter the key during activation.</li>
       </ol>
-      <p>If the balance shows correctly but the error still occurs, contact the admin at <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> and ask for a bot refresh.</p>
+      <p>If you only trade Robinhood, this error is expected — Solana is simply not configured.</p>
     </div>
   </div>
 
   <div class="page-nav">
     <span class="page-nav-btn" data-page="setup-after"><span class="arrow">←</span> After Setup</span>
-    <span class="page-nav-btn" data-page="err-op-forbidden">Operation Forbidden <span class="arrow">→</span></span>
-  </div>
-</div>
-
-<div class="page" id="err-op-forbidden">
-  <h1 class="page-title">Error — Operation Forbidden</h1>
-  <p class="page-subtitle">This error appears when trying to enable trading on your GMGN API key.</p>
-
-  <div class="error-card">
-    <div class="error-card-header"><span class="label">GMGN Error</span><code>operation forbidden</code></div>
-    <div class="error-card-body">
-      <p><strong>Cause 1 — No wallet selected (most common):</strong> GMGN won't let you enable trading on an API key that has no active wallet. Go to the portfolio page, select/tick one wallet, then return to the API page and try the toggle again.</p>
-      <p><strong>Cause 2 — Security lock:</strong> GMGN enforces a 24-hour lock after high-risk security changes — specifically, changing your login password or rebinding/resetting an existing 2FA setup. Creating 2FA for the very first time does <em>not</em> trigger this lock. If you've recently changed your password or reset 2FA, wait 24 hours then try again.</p>
-      <p><strong>2FA requirement:</strong> Google Authenticator is required. Email binding alone is not sufficient to enable trading.</p>
-    </div>
-  </div>
-
-  <div class="page-nav">
-    <span class="page-nav-btn" data-page="err-no-wallet"><span class="arrow">←</span> No Wallet Configured</span>
-    <span class="page-nav-btn" data-page="err-signature">Signature Invalid <span class="arrow">→</span></span>
-  </div>
-</div>
-
-<div class="page" id="err-signature">
-  <h1 class="page-title">Error — Signature Invalid (401)</h1>
-  <p class="page-subtitle">Your GMGN API key and the PEM file on your server don't match.</p>
-
-  <div class="error-card">
-    <div class="error-card-header"><span class="label">Error 401</span><code>AUTH_SIGNATURE_INVALID — signature invalid</code></div>
-    <div class="error-card-body">
-      <p><strong>What it means:</strong> This happens when you:</p>
-      <ul>
-        <li>Pasted an old API key from a previous setup, or</li>
-        <li>Manually created a key on GMGN instead of using the bot's generated link</li>
-      </ul>
-      <p><strong>Fix — request a fresh setup:</strong></p>
-      <ol>
-        <li>Contact the admin at <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> and ask for a bot refresh so a new matched API key and PEM pair can be generated.</li>
-        <li>Once your bot is refreshed, open it and use the <em>new</em> GMGN link it gives you — that link creates the matching key.</li>
-        <li>Paste the key from that new link. Do not reuse any API key from a previous session.</li>
-      </ol>
-    </div>
-  </div>
-
-  <div class="page-nav">
-    <span class="page-nav-btn" data-page="err-op-forbidden"><span class="arrow">←</span> Operation Forbidden</span>
-    <span class="page-nav-btn" data-page="err-gmgn-missing">GMGN Not Configured <span class="arrow">→</span></span>
-  </div>
-</div>
-
-<div class="page" id="err-gmgn-missing">
-  <h1 class="page-title">Error — GMGN Not Configured</h1>
-  <p class="page-subtitle">The bot tried to buy a Solana token but has no valid GMGN setup.</p>
-
-  <div class="error-card">
-    <div class="error-card-header"><span class="label">Error</span><code>GMGN not configured — check API key and PEM key file</code></div>
-    <div class="error-card-body">
-      <p><strong>What it means:</strong> Either <code>GMGN_API_KEY</code> is missing or blank.</p>
-      <p><strong>This error does not appear for Robinhood trades</strong> — those use a completely separate path.</p>
-      <p><strong>Fix:</strong> Contact the admin at <a href="https://t.me/ScrapeChainBot?start=4" target="_blank">@ScrapeChainBot</a> and ask for a bot refresh. This regenerates a matched API key and PEM pair, and your bot gives you a fresh GMGN link to click during setup.</p>
-    </div>
-  </div>
-
-  <div class="page-nav">
-    <span class="page-nav-btn" data-page="err-signature"><span class="arrow">←</span> Signature Invalid</span>
     <span class="page-nav-btn" data-page="err-fee-reserve">Insufficient Balance <span class="arrow">→</span></span>
   </div>
 </div>
@@ -988,31 +1095,7 @@
   </div>
 
   <div class="page-nav">
-    <span class="page-nav-btn" data-page="err-gmgn-missing"><span class="arrow">←</span> GMGN Not Configured</span>
-    <span class="page-nav-btn" data-page="err-2fa-wait">2FA Binding Wait <span class="arrow">→</span></span>
-  </div>
-</div>
-
-<div class="page" id="err-2fa-wait">
-  <h1 class="page-title">GMGN — 2FA Binding Wait</h1>
-  <p class="page-subtitle">GMGN is showing a security lock message when you try to enable trading.</p>
-
-  <div class="error-card">
-    <div class="error-card-header"><span class="label">GMGN Notice</span><code>For security, 2FA will take place 1 hour after binding</code></div>
-    <div class="error-card-body">
-      <p><strong>What it means:</strong> GMGN enforces a 24-hour security lock after certain high-risk account security changes. This is a GMGN platform security rule — nothing is broken on your end.</p>
-      <p><strong>What triggers the lock:</strong></p>
-      <ul>
-        <li>Changing your GMGN login password</li>
-        <li>Rebinding or resetting an existing 2FA setup (modifying your current Google Authenticator)</li>
-      </ul>
-      <p><strong>What does NOT trigger the lock:</strong> Adding Google Authenticator for the very first time. Initial 2FA setup is just the initial security binding step — it does not impose a wait.</p>
-      <p><strong>What to do:</strong> If you've recently changed your password or reset 2FA, wait 24 hours from when you made that change, then try enabling trading again. You can continue the rest of setup in the meantime — the API key can be saved even while trading is temporarily disabled.</p>
-    </div>
-  </div>
-
-  <div class="page-nav">
-    <span class="page-nav-btn" data-page="err-fee-reserve"><span class="arrow">←</span> Insufficient Balance</span>
+    <span class="page-nav-btn" data-page="err-no-wallet"><span class="arrow">←</span> No Wallet Configured</span>
     <span class="page-nav-btn" data-page="settings-duplicate">Global Settings → <span class="arrow">→</span></span>
   </div>
 </div>
@@ -1056,7 +1139,7 @@
   </div>
 
   <div class="page-nav">
-    <span class="page-nav-btn" data-page="err-2fa-wait"><span class="arrow">←</span> Troubleshooting</span>
+    <span class="page-nav-btn" data-page="err-fee-reserve"><span class="arrow">←</span> Troubleshooting</span>
     <span class="page-nav-btn" data-page="settings-chain">Chain Selection <span class="arrow">→</span></span>
   </div>
 </div>
@@ -1068,8 +1151,8 @@
   <table>
     <thead><tr><th>Chain</th><th>Address Format</th><th>Execution</th><th>Default</th></tr></thead>
     <tbody>
-      <tr><td><strong>◎ SOL</strong> — Solana</td><td>Base58, 32–44 characters</td><td>GMGN using your Solana wallet</td><td><strong>Enabled</strong></td></tr>
-      <tr><td><strong>🟢 Robinhood</strong> — EVM L2</td><td><code>0x…</code> format, 40 hex chars</td><td>QuickNode RPC endpoint</td><td><strong>Enabled</strong></td></tr>
+      <tr><td><strong>◎ SOL</strong> — Solana</td><td>Base58, 32–44 characters</td><td>Native — Jupiter &amp; PumpPortal</td><td><strong>Enabled</strong></td></tr>
+      <tr><td><strong>🟢 Robinhood</strong> — EVM L2</td><td><code>0x…</code> format, 40 hex chars</td><td>Alchemy RPC endpoint</td><td><strong>Enabled</strong></td></tr>
     </tbody>
   </table>
 
@@ -1160,6 +1243,42 @@
 
   <div class="page-nav">
     <span class="page-nav-btn" data-page="settings-honeypot"><span class="arrow">←</span> Honeypot Shield</span>
+    <span class="page-nav-btn" data-page="settings-rug-delay">Exit Delay <span class="arrow">→</span></span>
+  </div>
+</div>
+
+<div class="page" id="settings-rug-delay">
+  <h1 class="page-title">Exit Delay</h1>
+  <p class="page-subtitle">A grace period after you enter a token during which the Honeypot Shield stays unarmed. It stops fresh-launch setup activity from triggering a false emergency exit.</p>
+
+  <p>The Honeypot Shield fires an instant sell the moment it sees a dangerous on-chain instruction. On a brand-new token, normal launch/account setup can look similar enough to briefly trip it. Exit Delay gives the token a short window to settle before the shield starts enforcing exits.</p>
+
+  <h2>How it works</h2>
+  <ul>
+    <li>The delay is applied <strong>per position</strong>, counted from the moment the bot enters that specific token.</li>
+    <li>During the delay window, any Honeypot Shield signal for that position is <strong>ignored</strong> (logged, but no sell).</li>
+    <li>Once the window passes, the shield is fully armed and behaves normally.</li>
+  </ul>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Option</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>Presets</td><td>Off / 30s / 1m / 2m / 5m / 10m</td></tr>
+        <tr><td>Custom</td><td>Enter the delay in minutes (decimals allowed — e.g. <code>0.5</code> for 30 seconds)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p><strong>Default:</strong> <span class="badge badge-off">Off</span> (shield armed instantly)</p>
+
+  <div class="callout warning">
+    <strong>Trade-off</strong>
+    A longer delay means a real rug happening in the first N seconds will not be caught automatically. Keep it short, and only raise it if you are getting false exits right after entry. The Dev Sell Shield is never delayed — it stays armed from the first moment.
+  </div>
+
+  <div class="page-nav">
+    <span class="page-nav-btn" data-page="settings-dev-sell"><span class="arrow">←</span> Dev Sell Shield</span>
     <span class="page-nav-btn" data-page="settings-fees">Smart Fees <span class="arrow">→</span></span>
   </div>
 </div>
@@ -1409,6 +1528,52 @@
 
   <div class="page-nav">
     <span class="page-nav-btn" data-page="source-sol"><span class="arrow">←</span> SOL Channel Settings</span>
+    <span class="page-nav-btn" data-page="source-dynamic-sizing">Dynamic Buy Sizing <span class="arrow">→</span></span>
+  </div>
+</div>
+
+<div class="page" id="source-dynamic-sizing">
+  <h1 class="page-title">Dynamic Buy Sizing</h1>
+  <p class="page-subtitle">Instead of a fixed buy amount, size every trade as a percentage of the token's market cap or liquidity — so you never overspend on a small token or underspend on a large one.</p>
+
+  <p>Reach it from the channel's chain settings, under <strong>💰 Buy Amount → 📊 Dynamic Sizing</strong>. It solves the classic problem of a fixed amount: a $500 buy is fine on a $500K token but dwarfs a $2K market cap entirely.</p>
+
+  <h2>How the size is calculated</h2>
+  <pre>amount = base × percentage ÷ native price</pre>
+  <p>The result is then clamped between your Min and Max buy. The native price is read live and converted to SOL / ETH automatically.</p>
+
+  <h2>Settings</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Setting</th><th>What it does</th></tr></thead>
+      <tbody>
+        <tr><td>Base</td><td><strong>Market Cap</strong> (default) or <strong>Liquidity</strong>. Market cap is the default because fresh tokens usually have an MCap but no liquidity figure yet. If the chosen base is unavailable, the bot falls back to the other one automatically.</td></tr>
+        <tr><td>% of base</td><td>Presets 0.5% / 1% / 2% / 5% / 10% / 20%, or a custom value. This is the slice of market cap / liquidity each buy targets.</td></tr>
+        <tr><td>Min Buy</td><td>Floor on the computed size, in native units.</td></tr>
+        <tr><td>Max Buy</td><td>Cap on the computed size, in native units.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">Use Min / Max MCap to define your range</div>
+    Set <strong>Min MCap</strong> and <strong>Max MCap</strong> under 🛡️ Safety Filters. Tokens outside that range are rejected before the buy, so dynamic sizing always operates inside your chosen band.
+  </div>
+
+  <div class="callout warning">
+    <strong>Fallback behaviour</strong>
+    If neither market cap nor liquidity can be fetched, or the native price is unavailable, the bot falls back to the channel's fixed Buy Amount for that trade rather than skipping it.
+  </div>
+
+  <h2>Example</h2>
+  <p>Base = Market Cap, % = 1%, Min = 0.05 SOL, Max = 1.0 SOL, SOL price = $117.</p>
+  <ul>
+    <li>Token with $5,000 MCap → 1% = $50 → <strong>0.42 SOL</strong> (clamped up to Min 0.05 if smaller)</li>
+    <li>Token with $30,000 MCap → 1% = $300 → <strong>clamped to Max 1.0 SOL</strong></li>
+  </ul>
+
+  <div class="page-nav">
+    <span class="page-nav-btn" data-page="source-buy-amount"><span class="arrow">←</span> Buy Amount</span>
     <span class="page-nav-btn" data-page="source-slippage">Slippage <span class="arrow">→</span></span>
   </div>
 </div>
@@ -1656,6 +1821,54 @@
 
   <div class="page-nav">
     <span class="page-nav-btn" data-page="source-stop-loss"><span class="arrow">←</span> Stop Loss</span>
+    <span class="page-nav-btn" data-page="source-dormant">Dormant Sell <span class="arrow">→</span></span>
+  </div>
+</div>
+
+<div class="page" id="source-dormant">
+  <h1 class="page-title">Dormant Sell</h1>
+  <p class="page-subtitle">Automatically exits tokens that go nowhere. If a token stays flat for a set time, the bot sells it to free up capital tied down in dead positions.</p>
+
+  <p>This bot is an auto-buy bot, so it will sometimes buy tokens that simply die — especially pre-graduation tokens that never graduate. Rather than holding a dead position indefinitely, Dormant Sell releases the capital after a timeout you choose.</p>
+
+  <h2>What counts as dormant</h2>
+  <p>A token is considered dormant when its price stays <strong>within ± your threshold of your entry price</strong> for the full duration.</p>
+  <ul>
+    <li>If the price stays flat (inside the band) for the configured duration → the bot sells <strong>100%</strong>.</li>
+    <li>If the price moves beyond the band at any point, the token is marked <strong>alive</strong> and the timer resets.</li>
+  </ul>
+
+  <h2>Settings</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Setting</th><th>Details</th></tr></thead>
+      <tbody>
+        <tr><td>Dormant Sell</td><td>ON / OFF toggle for this channel + chain.</td></tr>
+        <tr><td>Flat For</td><td>Presets <strong>3m / 5m / 10m / 30m / 1h</strong>, or a custom value in minutes. Default 10m.</td></tr>
+        <tr><td>Move Threshold</td><td>Presets <strong>±5% / ±10% / ±20% / ±50%</strong>, or a custom ± percentage. Default ±10%.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="callout info">
+    <div class="callout-title">Per chain, not global — on purpose</div>
+    This is set per channel + chain rather than globally. Some channels are fast-paced and should release dead tokens aggressively; long-term holds should not be sold just for being quiet. Keeping it per-channel lets you be strict on one channel and patient on another.
+  </div>
+
+  <div class="callout warning">
+    <strong>Frozen at entry</strong>
+    The dormant setting is captured onto each position when you buy. Changing it later only affects new positions — open positions keep the rule they were opened with.
+  </div>
+
+  <h2>Example</h2>
+  <p>Flat For = 10m, Threshold = ±10%. You buy at $1.00.</p>
+  <ul>
+    <li>Price drifts between $0.95 and $1.05 for 10 minutes → <strong>sold</strong> (dormant).</li>
+    <li>Price hits $1.15 at minute 4 → marked alive, timer resets. If it then stays flat for 10 more minutes, it sells.</li>
+  </ul>
+
+  <div class="page-nav">
+    <span class="page-nav-btn" data-page="source-take-profit"><span class="arrow">←</span> Take Profit</span>
     <span class="page-nav-btn" data-page="source-safety-filters">Safety Filters <span class="arrow">→</span></span>
   </div>
 </div>
@@ -1849,9 +2062,10 @@
     <li>If <strong>none</strong> pass → trade is cancelled</li>
     <li>Individual filters use <strong>OR logic</strong> with each other</li>
     <li>A Multi-Filter group uses <strong>AND logic</strong> internally (all conditions in the group must pass)</li>
+    <li>The <strong>Blacklist</strong> overrides everything — if any blacklist rule matches, the buy is refused even when the allow-filters pass</li>
   </ul>
 
-  <p>See the sub-pages for full instructions on adding single filters and multi-filter groups.</p>
+  <p>See the sub-pages for full instructions on adding single filters, multi-filter groups, and blacklist rules.</p>
 
   <div class="page-nav">
     <span class="page-nav-btn" data-page="source-filter-mode"><span class="arrow">←</span> Filter Mode</span>
@@ -2139,6 +2353,56 @@ early</pre>
 
   <div class="page-nav">
     <span class="page-nav-btn" data-page="source-add-filter"><span class="arrow">←</span> Add Filter</span>
+    <span class="page-nav-btn" data-page="source-blacklist">Blacklist <span class="arrow">→</span></span>
+  </div>
+</div>
+
+<div class="page" id="source-blacklist">
+  <h1 class="page-title">Blacklist</h1>
+  <p class="page-subtitle">The ultimate override filter. If a message matches a blacklist rule, the buy is refused — even if every normal filter passed.</p>
+
+  <p>The blacklist lives in the same Dynamic Filters menu and is built exactly the same way as Add Filter and Multi-Filter. The only difference is its effect: normal filters <strong>allow</strong> a trade when they pass, while blacklist rules <strong>refuse</strong> a trade when they match. Blacklist always wins.</p>
+
+  <h2>Allow Filters vs Blacklist</h2>
+  <ul>
+    <li><strong>Allow Filters</strong> — buy is allowed when <strong>any</strong> filter matches.</li>
+    <li><strong>Blacklist</strong> — buy is <strong>refused</strong> when <strong>any</strong> blacklist rule matches, overriding everything else.</li>
+  </ul>
+
+  <h2>Command format</h2>
+  <p>Two buttons mirror the normal filters: <strong>🚫 Add Blacklist</strong> (one condition) and <strong>🚫🔗 Add Multi-Blacklist (AND)</strong> (all conditions must match). The commands are:</p>
+  <pre>/blacklist &lt;context&gt; [anchor] [value]</pre>
+  <pre>/multiblacklist
+&lt;context line 1&gt; [anchor1] [value1]
+&lt;context line 2&gt; [anchor2] [value2]</pre>
+
+  <div class="callout info">
+    <div class="callout-title">Same building blocks</div>
+    Context, anchor in <code>[ ]</code>, and value in <code>[ ]</code> work exactly as described in <span data-page="source-add-filter" style="color:var(--accent);cursor:pointer">Add Filter</span>. Numeric rules support <code>&gt; 100</code>, <code>&lt; 50</code>, and ranges like <code>50-100</code>.
+  </div>
+
+  <h2>Example — block a banned signal</h2>
+  <p><strong>Goal:</strong> Never buy when the channel's rating line says "Low".</p>
+  <p>The channel posts a line like <code>Rating: Low</code> where the word after <code>Rating:</code> changes. Use <code>Rating: </code> as the anchor and <code>Low</code> as the value:</p>
+  <pre>/blacklist Rating: Low [Rating: ][Low]</pre>
+  <p>Rule:</p>
+  <pre>Low</pre>
+  <p>Now, even if the message passes all your normal allow-filters, a matching <code>Low</code> rating refuses the trade.</p>
+
+  <h2>Example — range blacklist (volume)</h2>
+  <p><strong>Goal:</strong> Refuse trades where 24h volume is between 50 and 100.</p>
+  <pre>/blacklist 24h Volume: 75 SOL [SOL] [75]</pre>
+  <p>Rule:</p>
+  <pre>50-100</pre>
+  <p>The range is inclusive: 50, 100, and everything between. Values below 50 or above 100 do not match and the buy proceeds.</p>
+
+  <div class="callout warning">
+    <strong>Blacklisting whole groups</strong>
+    A <strong>Multi-Blacklist</strong> only refuses when <strong>all</strong> of its conditions match in the same message. Separate single blacklist entries are independent — any one of them matching is enough to refuse.
+  </div>
+
+  <div class="page-nav">
+    <span class="page-nav-btn" data-page="source-multi-filter"><span class="arrow">←</span> Multi-Filter (AND Logic)</span>
     <span class="page-nav-btn" data-page="source-remove">Remove Channel <span class="arrow">→</span></span>
   </div>
 </div>
@@ -2166,9 +2430,18 @@ early</pre>
 ══════════════════════════════════════════════════ -->
 <div class="page" id="positions">
   <h1 class="page-title">Positions</h1>
-  <p class="page-subtitle">The Positions section shows all token positions the bot currently holds and is actively monitoring for Stop Loss or Take Profit conditions.</p>
+  <p class="page-subtitle">A live dashboard of the tokens you hold, priced in USD and refreshed every few seconds.</p>
 
-  <p>Access it from the bot's main menu. Each entry shows the token address and current monitoring status.</p>
+  <p>Access it from the bot's main menu, then choose a chain. Each holding is shown with its symbol and name, token balance, current USD price, USD value, and your PnL against the entry price of the tracked position. A running total of all holdings is shown at the bottom, along with the time of the last update.</p>
+
+  <h2>Live updates</h2>
+  <p>The dashboard refreshes automatically (roughly every 3 seconds) until you navigate away. Prices and USD values update in place, so you can watch a position move in real time without pressing anything.</p>
+
+  <h2>Dust filtering</h2>
+  <p>Holdings worth under <strong>$2</strong> are hidden. This keeps spam and leftover dust from cluttering the view. Tokens with no available price are also hidden, since they cannot be valued.</p>
+
+  <h2>Selling from the dashboard</h2>
+  <p>Each position has <strong>Sell 25% / 50% / 100%</strong> buttons for a direct market exit, independent of any Stop Loss or Take Profit. After a sell, the dashboard refreshes immediately with the result.</p>
 
   <div class="page-nav">
     <span class="page-nav-btn" data-page="source-remove"><span class="arrow">←</span> Remove Channel</span>
@@ -2178,11 +2451,18 @@ early</pre>
 
 <div class="page" id="positions-sol">
   <h1 class="page-title">Solana Positions</h1>
-  <p class="page-subtitle">Lists all active Solana token positions and current monitoring status.</p>
+  <p class="page-subtitle">Live USD dashboard of every SPL and Token-2022 token your Solana wallet holds.</p>
 
-  <h2>Sell 100%</h2>
-  <p>Immediately sends a market sell order for your entire holding of that token at the current market price, regardless of your entry price or any configured SL/TP levels.</p>
-  <p><strong>When to use:</strong> Manual exit before SL/TP fires &bull; Close a position with no SL/TP configured &bull; Exit after monitoring has expired.</p>
+  <p>The bot reads your wallet directly, so every token with a value of $2 or more appears automatically — you do not need an open tracked position for a token to be listed and sellable here.</p>
+
+  <h2>Sell 25% / 50% / 100%</h2>
+  <p>Sends a market sell for that percentage of your holding at the current market price, regardless of your entry price or any configured SL/TP levels.</p>
+  <p><strong>When to use:</strong> Manual exit before SL/TP fires &bull; Scale out in portions (e.g. 50% now, hold the rest) &bull; Close a position with no SL/TP configured &bull; Exit after monitoring has expired.</p>
+
+  <div class="callout info">
+    <div class="callout-title">Unpriced tokens</div>
+    A token with no DexScreener pair is hidden because it cannot be valued. If you need to sell one, paste its contract address to trade it manually.
+  </div>
 
   <div class="page-nav">
     <span class="page-nav-btn" data-page="positions"><span class="arrow">←</span> Positions Overview</span>
@@ -2192,10 +2472,12 @@ early</pre>
 
 <div class="page" id="positions-robinhood">
   <h1 class="page-title">Robinhood Positions</h1>
-  <p class="page-subtitle">Lists all active EVM/Robinhood chain positions.</p>
+  <p class="page-subtitle">Live USD dashboard of your tracked Robinhood chain positions.</p>
 
-  <h2>Sell 100%</h2>
-  <p>Same as the Solana equivalent — immediately sells 100% of the position at current market price on the EVM chain.</p>
+  <p>EVM wallets cannot be enumerated the way Solana wallets can, so this list shows the positions the bot has tracked (i.e. tokens it bought). Each row shows the same live details as the Solana view: balance, USD price, USD value, and PnL against entry.</p>
+
+  <h2>Sell 25% / 50% / 100%</h2>
+  <p>Same as the Solana equivalent — sells that percentage of the position at the current market price on the EVM chain.</p>
 
   <div class="callout info">
     <div class="callout-title">ℹ️ Dust Positions on EVM</div>
@@ -2218,7 +2500,7 @@ early</pre>
 
   <div class="callout warn">
     <div class="callout-title">⚠️ Robinhood Here Is Not the Stock Brokerage App</div>
-    Robinhood chain is a cryptocurrency blockchain (an EVM Layer 2), completely unrelated to the Robinhood stock trading app. You do not need a Robinhood brokerage account. The only service you sign up for is QuickNode for the RPC endpoint.
+    Robinhood chain is a cryptocurrency blockchain (an EVM Layer 2), completely unrelated to the Robinhood stock trading app. You do not need a Robinhood brokerage account. The only service you sign up for is a free Alchemy account for the RPC endpoint.
   </div>
 
   <div class="chain-grid">
@@ -2226,9 +2508,9 @@ early</pre>
       <h4>◎ Solana <span class="badge badge-sol">SOL</span></h4>
       <ul>
         <li>Trades Solana-based tokens (SPL tokens)</li>
-        <li>Requires GMGN API key + PEM setup</li>
+        <li>Trades natively — no GMGN account or API key</li>
         <li>Requires a Solana wallet private key</li>
-        <li>Requires a Helius API key for RPC</li>
+        <li>Optionally uses a Helius API key for a faster RPC</li>
         <li>Most Telegram alpha channels post Solana CAs</li>
         <li>Buy amounts are in SOL</li>
         <li>Contract addresses: 32–44 character base58 strings</li>
@@ -2238,9 +2520,8 @@ early</pre>
       <h4>🟢 Robinhood Chain <span class="badge badge-evm">EVM</span></h4>
       <ul>
         <li>Trades Robinhood chain tokens (EVM tokens)</li>
-        <li>No GMGN API key needed at all</li>
         <li>Requires an EVM wallet private key</li>
-        <li>Requires a QuickNode RPC URL</li>
+        <li>Requires an Alchemy Robinhood RPC URL</li>
         <li>Different tokens from Solana</li>
         <li>Buy amounts are in ETH (bridge via @based_eth_bot)</li>
         <li>Contract addresses: start with <code>0x</code></li>
@@ -2286,10 +2567,10 @@ early</pre>
 
 <div class="page" id="concepts-robinhood-only">
   <h1 class="page-title">Running Robinhood-Only</h1>
-  <p class="page-subtitle">If you only want to trade on Robinhood chain and do not need GMGN / Solana setup.</p>
+  <p class="page-subtitle">If you only want to trade on Robinhood chain and do not need the Solana setup.</p>
 
   <h2>During Initial Setup</h2>
-  <p>When the bot asks for the GMGN API key, type anything (or blank) and continue. When asked about Robinhood, type <code>yes</code> and enter your EVM private key and QuickNode URL. The bot starts Robinhood-only.</p>
+  <p>When the bot asks for the <strong>Solana wallet private key</strong>, press Enter to skip it. When asked about Robinhood, type <code>yes</code> and enter your EVM private key and Alchemy Robinhood RPC URL. The bot starts Robinhood-only.</p>
 
   <div class="callout info">
     <div class="callout-title">ℹ️ Switching After Setup</div>
@@ -2312,6 +2593,72 @@ early</pre>
 </main>
 
 <script>
+  const sidebar = document.getElementById('sidebar');
+  const menuToggle = document.getElementById('menu-toggle');
+  const menuSearch = document.getElementById('menu-search');
+  const navGroups = Array.from(document.querySelectorAll('.nav-group'));
+  let openGroupsBeforeSearch = null;
+
+  function setMenuOpen(open) {
+    sidebar.classList.toggle('is-open', open);
+    menuToggle.setAttribute('aria-expanded', String(open));
+  }
+
+  function filterMenu() {
+    const query = menuSearch.value.trim().toLowerCase();
+    if (query && openGroupsBeforeSearch === null) {
+      openGroupsBeforeSearch = new Map(navGroups.map(group => [group, group.classList.contains('open')]));
+    }
+
+    navGroups.forEach(group => {
+      const header = group.querySelector('.nav-group-header');
+      const links = Array.from(group.querySelectorAll('.nav-group-links a[data-page]'));
+      if (!query) {
+        group.hidden = false;
+        links.forEach(link => { link.hidden = false; });
+        if (openGroupsBeforeSearch) {
+          const wasOpen = openGroupsBeforeSearch.get(group);
+          group.classList.toggle('open', wasOpen);
+          header.setAttribute('aria-expanded', String(wasOpen));
+        }
+        return;
+      }
+
+      const groupMatches = header.textContent.toLowerCase().includes(query);
+      let matchingLinks = 0;
+      links.forEach(link => {
+        const page = document.getElementById(link.dataset.page);
+        const searchableText = `${link.textContent} ${page ? page.textContent : ''}`.toLowerCase();
+        const matches = groupMatches || searchableText.includes(query);
+        link.hidden = !matches;
+        if (matches) matchingLinks += 1;
+      });
+      const matches = groupMatches || matchingLinks > 0;
+      group.hidden = !matches;
+      if (matches) {
+        group.classList.add('open');
+        header.setAttribute('aria-expanded', 'true');
+      }
+    });
+
+    if (!query) openGroupsBeforeSearch = null;
+  }
+
+  function selectMenuPage(pageId) {
+    navigateTo(pageId);
+    menuSearch.value = '';
+    filterMenu();
+    if (window.matchMedia('(max-width: 768px)').matches) setMenuOpen(false);
+  }
+
+  menuToggle.addEventListener('click', () => {
+    setMenuOpen(!sidebar.classList.contains('is-open'));
+  });
+  menuSearch.addEventListener('input', filterMenu);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && sidebar.classList.contains('is-open')) setMenuOpen(false);
+  });
+
   // ─── Page navigation ─────────────────────────────
   function navigateTo(pageId) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -2331,14 +2678,42 @@ early</pre>
     const el = e.target.closest('[data-page]');
     if (el && !el.classList.contains('nav-group-header')) {
       e.preventDefault();
-      navigateTo(el.dataset.page);
+      if (el.closest('#sidebar')) selectMenuPage(el.dataset.page);
+      else navigateTo(el.dataset.page);
     }
   });
 
   // ─── Collapsible nav groups ──────────────────────
   document.querySelectorAll('.nav-group-header').forEach(header => {
-    header.addEventListener('click', () => {
-      header.parentElement.classList.toggle('open');
+    const group = header.parentElement;
+    const links = group.querySelector('.nav-group-links');
+    header.setAttribute('role', 'button');
+    header.setAttribute('tabindex', '0');
+    header.setAttribute('aria-expanded', String(group.classList.contains('open')));
+    if (links) {
+      links.id = `nav-links-${group.dataset.group}`;
+      header.setAttribute('aria-controls', links.id);
+    }
+    const toggleGroup = () => {
+      const open = group.classList.toggle('open');
+      header.setAttribute('aria-expanded', String(open));
+    };
+    header.addEventListener('click', toggleGroup);
+    header.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleGroup();
+      }
+    });
+  });
+  document.querySelectorAll('#sidebar a[data-page]').forEach(link => {
+    link.setAttribute('role', 'link');
+    link.setAttribute('tabindex', '0');
+    link.addEventListener('keydown', event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        selectMenuPage(link.dataset.page);
+      }
     });
   });
 
