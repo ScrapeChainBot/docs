@@ -333,19 +333,13 @@
       padding: 23px 18px 18px 66px;
       border-bottom-color: var(--border);
     }
-    .sidebar-logo::before {
-      content: "";
+    .sidebar-logo-mark {
       position: absolute;
-      top: 21px;
-      left: 18px;
-      width: 34px;
-      height: 34px;
-      border: 1px solid var(--border);
-      border-radius: 5px;
-      background:
-        linear-gradient(135deg, transparent 0 45%, rgba(255,255,255,.12) 45% 100%),
-        var(--accent);
-      box-shadow: 0 5px 14px rgba(0,0,0,.22);
+      top: 19px;
+      left: 17px;
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
     }
     .sidebar-logo h1 {
       color: var(--text-bright);
@@ -577,6 +571,7 @@
 <!-- ═══════════════════ SIDEBAR ═══════════════════ -->
 <nav id="sidebar" aria-label="Documentation navigation">
   <div class="sidebar-logo">
+    <img class="sidebar-logo-mark" src="images/scrapechain-emblem.png" alt="" aria-hidden="true" />
     <h1>ScrapeChain Bot</h1>
     <span>Setup &amp; Reference Guide</span>
   </div>
